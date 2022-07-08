@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Lai Blog</title>
+  
+  
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2022-07-08T05:08:13.966Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>Lai</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>敬请期待~</title>
+    <link href="http://example.com/2022/07/08/README/"/>
+    <id>http://example.com/2022/07/08/README/</id>
+    <published>2022-07-08T14:34:08.000Z</published>
+    <updated>2022-07-08T05:08:13.966Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/2022/07/08/README/redhat-logo.png" alt="redhat-logo"></p><p><img src="/2022/07/08/README/%E6%88%B4%E7%BB%B4%E6%A3%AE.jpg" alt="戴维森"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/2022/07/08/README/redhat-logo.png&quot; alt=&quot;redhat-logo&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2022/07/08/README/%E6%88%B4%E7%BB%B4%E6%A3%AE.jpg&quot; alt</summary>
+      
+    
+    
+    
+    <category term="RHCA" scheme="http://example.com/categories/RHCA/"/>
+    
+    <category term="云计算架构师" scheme="http://example.com/categories/RHCA/%E4%BA%91%E8%AE%A1%E7%AE%97%E6%9E%B6%E6%9E%84%E5%B8%88/"/>
+    
+    
+    <category term="开发" scheme="http://example.com/tags/%E5%BC%80%E5%8F%91/"/>
+    
+    <category term="运维" scheme="http://example.com/tags/%E8%BF%90%E7%BB%B4/"/>
+    
+  </entry>
+  
+</feed>
