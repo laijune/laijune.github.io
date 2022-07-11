@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/08/unit%20testing/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/08/Cloud%20AI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -284,7 +284,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2022/08/08/unit%20testing/" itemprop="url">Comming soon~</a></h1>
+                <a class="post-title-link" href="/2022/08/08/Cloud%20AI/" itemprop="url">云AI平台实战</a></h1>
         
         <div class="post-meta">
           <span class="post-time">
@@ -317,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
-                    <span itemprop="name">单元测试</span>
+                  <a href="/categories/%E4%BA%91AI%E5%B9%B3%E5%8F%B0%E5%AE%9E%E6%88%98/" itemprop="url" rel="index">
+                    <span itemprop="name">云AI平台实战</span>
                   </a>
                 </span>
 
@@ -355,13 +355,13 @@
 
       
         
-          <p><code>恢复快照</code></p>
-<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署IP，能联通外网</p>
-<p>②清除防火墙规则</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+          <h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
+<p><strong>初始快照，配置网络，能PING通外网</strong></p>
+<p><strong>配置YUM源</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2022/08/08/unit%20testing/#more" rel="contents">
+            <a class="btn" href="/2022/08/08/Cloud%20AI/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -558,6 +558,159 @@
 
 
     
+      
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/08/unit%20testing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/08/08/unit%20testing/" itemprop="url">云容器平台实战</a></h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-08-08T20:00:00+08:00">
+                2022-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><code>恢复快照</code></p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署IP，能联通外网</p>
+<p>②清除防火墙规则</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/08/08/unit%20testing/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+    
   </section>
 
   
@@ -604,7 +757,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -615,7 +768,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -626,7 +779,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
