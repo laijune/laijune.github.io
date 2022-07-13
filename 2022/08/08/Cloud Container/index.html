@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="容器," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Alan's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="恢复快照 准备工作①部署IP，能联通外网 ②清除防火墙规则 1234567891011[root@localhost ~]# iptables -F[root@localhost ~]# iptables -X[root@localhost ~]# iptables -Z[root@localhost ~]# &#x2F;usr&#x2F;sbin&#x2F;iptables-save[root@localhost ~]# v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云容器平台实战">
+<meta property="og:url" content="http://example.com/2022/08/08/Cloud%20Container/index.html">
+<meta property="og:site_name" content="Alan&#39;s Blog">
+<meta property="og:description" content="恢复快照 准备工作①部署IP，能联通外网 ②清除防火墙规则 1234567891011[root@localhost ~]# iptables -F[root@localhost ~]# iptables -X[root@localhost ~]# iptables -Z[root@localhost ~]# &#x2F;usr&#x2F;sbin&#x2F;iptables-save[root@localhost ~]# v">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/08/Cloud%20Container/image-20220709205122302.png">
+<meta property="article:published_time" content="2022-08-08T12:00:01.000Z">
+<meta property="article:modified_time" content="2022-07-13T03:35:39.058Z">
+<meta property="article:author" content="LAI JUNYAN">
+<meta property="article:tag" content="容器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/08/08/Cloud%20Container/image-20220709205122302.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/08/08/Cloud Container/"/>
+
+
+
+
+
+  <title>云容器平台实战 | Alan's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/08/Cloud%20Container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">云容器平台实战</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-08-08T20:00:01+08:00">
+                2022-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>恢复快照</code></p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署IP，能联通外网</p>
+<p>②清除防火墙规则</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>③关闭swap交换分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
+
+<p>④路由转发</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
+
+<p>⑤物理机scp上传<code>Kubernetes.zip</code>文件</p>
+<p>再解压.zip文件</p>
+<p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
+<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有Centos-xxx文件，再配置本地yum源（只留这一个文件）</p>
+<p>⑦重启服务</p>
+<p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
+<p>⑧安装docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="部署MySQL容器"><a href="#部署MySQL容器" class="headerlink" title="部署MySQL容器"></a>部署MySQL容器</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="安装wordpress"><a href="#安装wordpress" class="headerlink" title="安装wordpress"></a>安装wordpress</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>浏览器访问即可</strong></p>
+<p>IP地址/9090</p>
+<img src="/2022/08/08/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
+
+
+
+<p>下面按照题目要求post博客即可~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag"># 容器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/08/08/Machine%20learning/" rel="prev" title="期末测试">
+                期末测试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaopan233.club/" title="Xiaopan233 Blog" target="_blank">Xiaopan233 Blog</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="www.petitstart.club" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2MySQL%E5%AE%B9%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">部署MySQL容器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85wordpress"><span class="nav-number">3.</span> <span class="nav-text">安装wordpress</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LAI JUNYAN</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
