@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="监控,Zabbixe," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Alan's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="今天来部署 Zabbix 来监控我的服务器；  Zabbix 官网：https:&#x2F;&#x2F;www.zabbix.com&#x2F;cn&#x2F;manuals ；其中 LTS（Long Term Support）是长期支持版本。 我们的服务器环境依旧是 CentOS Stream 8，安装 Zabbix 的版本是 4.0 LTS  安装 zabbix 4.0 版本服务端部署流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zabbix 监控">
+<meta property="og:url" content="http://example.com/2022/11/11/zabbix/index.html">
+<meta property="og:site_name" content="Alan&#39;s Blog">
+<meta property="og:description" content="今天来部署 Zabbix 来监控我的服务器；  Zabbix 官网：https:&#x2F;&#x2F;www.zabbix.com&#x2F;cn&#x2F;manuals ；其中 LTS（Long Term Support）是长期支持版本。 我们的服务器环境依旧是 CentOS Stream 8，安装 Zabbix 的版本是 4.0 LTS  安装 zabbix 4.0 版本服务端部署流程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111230949455.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111231310604.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111231714873.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111231948330.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111232031222.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111232105026.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111232259952.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111232456595.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111232832617.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111234231331.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221111234958289.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221112000032655.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221112001106389.png">
+<meta property="og:image" content="http://example.com/2022/11/11/zabbix/image-20221112001119489.png">
+<meta property="article:published_time" content="2022-11-11T12:00:01.000Z">
+<meta property="article:modified_time" content="2022-11-11T16:36:19.410Z">
+<meta property="article:author" content="LAI JUNYAN">
+<meta property="article:tag" content="监控">
+<meta property="article:tag" content="Zabbixe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/11/11/zabbix/image-20221111230949455.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/11/11/zabbix/"/>
+
+
+
+
+
+  <title>Zabbix 监控 | Alan's Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/atom.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+<script>
+  var server_url = "http://127.0.0.1/blog_v1/blog_v1.php";
+</script>
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/11/zabbix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Zabbix 监控</h1>
+        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-11-11T20:00:01+08:00">
+                2022-11-11
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+          
+            
+          
+
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天来部署 Zabbix 来监控我的服务器；</p>
+<blockquote>
+<p>Zabbix 官网：<a target="_blank" rel="noopener" href="https://www.zabbix.com/cn/manuals">https://www.zabbix.com/cn/manuals</a> ；其中 LTS（Long Term Support）是长期支持版本。</p>
+<p>我们的服务器环境依旧是 <strong>CentOS Stream 8</strong>，安装 Zabbix 的版本是 <strong>4.0 LTS</strong></p>
+</blockquote>
+<h2 id="安装-zabbix-4-0-版本"><a href="#安装-zabbix-4-0-版本" class="headerlink" title="安装 zabbix 4.0 版本"></a>安装 zabbix 4.0 版本</h2><h3 id="服务端部署流程"><a href="#服务端部署流程" class="headerlink" title="服务端部署流程"></a>服务端部署流程</h3><span id="more"></span>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">1.安装zabbix.repo仓库文件,清华源的zabbix4版本(如果是其它操作系统,则选择对应版本的rpm包)</span><br><span class="line">[root@stream8 ~]<span class="comment"># rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/zabbix/zabbix/4.0/rhel/8/x86_64/zabbix-release-4.0-2.el8.noarch.rpm</span></span><br><span class="line"></span><br><span class="line">此时,yum仓库会多一个zabbix.repo文件</span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/yum.repos.d/zabbix.repo </span></span><br><span class="line">[zabbix]</span><br><span class="line">name=Zabbix Official Repository - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/zabbix/4.0/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591</span><br><span class="line"></span><br><span class="line">[zabbix-non-supported]</span><br><span class="line">name=Zabbix Official Repository non-supported - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/non-supported/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX</span><br><span class="line">gpgcheck=1</span><br><span class="line"></span><br><span class="line">替换zabbix的来源路径为清华的源(因为zabbix官网的服务器在国外)</span><br><span class="line">[root@stream8 ~]<span class="comment"># sed -i &#x27;s#repo.zabbix.com#mirrors.tuna.tsinghua.edu.cn/zabbix#g&#x27; /etc/yum.repos.d/zabbix.repo</span></span><br><span class="line"></span><br><span class="line">2.安装zabbix服务端(前端)、zabbix连接数据库、zabbix-agent(客户端)</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-agent mariadb-server</span></span><br><span class="line"><span class="comment"># zabbix 4.0默认是lamp,所以这一步会自动安装httpd,在5.0版本则不会安装httpd</span></span><br><span class="line"></span><br><span class="line">启动mariadb数据库,设置开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start mariadb &amp; systemctl enable mariadb</span></span><br><span class="line"></span><br><span class="line">3.设置mariadb数据库密码(默认账号是root),创建zabbix库(设置字符集是utf8),存储监控数据,且创建账号</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysqladmin password redhat	</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;create database zabbix character set utf8 collate utf8_bin;&quot;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;grant all privileges on zabbix.* to zabbix@localhost identified by &#x27;redhat&#x27;;&quot;</span></span><br><span class="line"></span><br><span class="line">测试zabbix用户</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show databases;&quot;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| zabbix             |</span><br><span class="line">+--------------------+</span><br><span class="line"></span><br><span class="line">4.导入zabbix的数据库</span><br><span class="line">这里因为Stream8版本原因,zcat读取create.sql.gz会报错<span class="string">&quot;导入的数据行太长了&quot;</span>,修改一下mysql的配置文件并重启服务即可解决;</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/my.cnf</span></span><br><span class="line">...添加下几行</span><br><span class="line">[mysqld]</span><br><span class="line">innodb_strict_mode = 0</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart mariadb</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在CentOS 7版本则不会出现以上问题</span></span><br><span class="line"><span class="comment"># 用zcat直接读取gz压缩包,管道符交给mysql命令导入数据,往zabbix库中导入数据</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -predhat zabbix</span></span><br><span class="line"></span><br><span class="line">查看导入zabbix数据库的表;</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show tables from zabbix;&quot;</span></span><br><span class="line">...</span><br><span class="line">| users                      |</span><br><span class="line">| users_groups               |</span><br><span class="line">| usrgrp                     |</span><br><span class="line">| valuemaps                  |</span><br><span class="line">| widget                     |</span><br><span class="line">| widget_field               |</span><br><span class="line">+----------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5. 编辑zabbix-server服务端配置文件(修改数据库部分即可)	</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># DBHost=localhost			数据库主机,默认未开启</span></span><br><span class="line">DBHost=localhost			启动,指定为本机</span><br><span class="line"></span><br><span class="line"><span class="comment"># DBPassword=				数据库密码,默认未开启</span></span><br><span class="line">DBPassword=redhat			开启,设置zabbix数据库密码</span><br><span class="line"></span><br><span class="line">修改完,也可以直接替换源文件为以下有效的内容,直观明了</span><br><span class="line">[root@stream8 ~]<span class="comment"># grep &quot;^[a-Z]&quot; /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">LogFile=/var/<span class="built_in">log</span>/zabbix/zabbix_server.log</span><br><span class="line">LogFileSize=0</span><br><span class="line">PidFile=/var/run/zabbix/zabbix_server.pid</span><br><span class="line">SocketDir=/var/run/zabbix</span><br><span class="line">DBHost=localhost		<span class="comment"># 指定mysql的地址</span></span><br><span class="line">DBName=zabbix			<span class="comment"># 数据库名字</span></span><br><span class="line">DBUser=zabbix			<span class="comment"># 数据库的连接用户</span></span><br><span class="line">DBPassword=redhat		<span class="comment"># 数据库密码</span></span><br><span class="line">SNMPTrapperFile=/var/<span class="built_in">log</span>/snmptrap/snmptrap.log		<span class="comment"># 存放自定义监控项的目录</span></span><br><span class="line">Timeout=4</span><br><span class="line">AlertScriptsPath=/usr/lib/zabbix/alertscripts</span><br><span class="line">ExternalScripts=/usr/lib/zabbix/externalscripts</span><br><span class="line">LogSlowQueries=3000</span><br><span class="line"></span><br><span class="line">6.启动zabbix服务,且开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start zabbix-server &amp; systemctl enable zabbix-server</span></span><br><span class="line"></span><br><span class="line">7.检查zabbix(zabbix服务端的端口<span class="string">&#x27;10051&#x27;</span>)</span><br><span class="line">[root@stream8 ~]<span class="comment"># netstat -nltp</span></span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1131/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:10051           0.0.0.0:*               LISTEN      13601/zabbix_server </span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN      9999/mysqld         </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      1131/sshd           </span><br><span class="line">tcp6       0      0 :::10051                :::*                    LISTEN      13601/zabbix_server </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>至此，zabbix-server 服务端核心程序就装好了，以及 zabbix-UI 这个php程序也装好了；</p>
+<p>还需配置 web 前端，默认 zabbix 4.0 版本只支持 apache，不同 zabbix 版本 web 前端代理不一样（nginx、apache）</p>
+</blockquote>
+<p><strong>Apache 配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">1.修改PHP时区</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/php.ini </span></span><br><span class="line">...</span><br><span class="line">;date.timezone =				<span class="comment"># 找到时区这一行(默认是未开启的)</span></span><br><span class="line">date.timezone = Asia/Shanghai	<span class="comment"># 设置为亚洲/上海	</span></span><br><span class="line"></span><br><span class="line">如果后续手动修改了时区,需要重启php的服务</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart php-fpm</span></span><br><span class="line"></span><br><span class="line">2.重启apache服务</span><br><span class="line"><span class="comment"># 查看apache子目录zabbix的配置</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/httpd/conf.d/zabbix.conf </span></span><br><span class="line">...</span><br><span class="line">Alias /zabbix /usr/share/zabbix	 	可以看到访问/zabbix,会转发到/usr/share/zabbix目录</span><br><span class="line"></span><br><span class="line">&lt;Directory <span class="string">&quot;/usr/share/zabbix&quot;</span>&gt;</span><br><span class="line">    Options FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line"></span><br><span class="line">    &lt;FilesMatch \.(php|phar)$&gt;</span><br><span class="line">        SetHandler <span class="string">&quot;proxy:unix:/run/php-fpm/zabbix.sock|fcgi://localhost&quot;</span></span><br><span class="line">    &lt;/FilesMatch&gt;</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start httpd &amp; systemctl enable httpd</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>访问服务器的<code>IP</code>加<code>/zabbix</code></strong></p>
+<img src="/2022/11/11/zabbix/image-20221111230949455.png" alt="image-20221111230949455" style="zoom:150%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221111231310604.png" alt="image-20221111231310604" style="zoom:150%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221111231714873.png" alt="image-20221111231714873" style="zoom:150%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221111231948330.png" alt="image-20221111231948330" style="zoom:150%;">
+
+
+
+<p><img src="/2022/11/11/zabbix/image-20221111232031222.png" alt="image-20221111232031222"></p>
+<p><img src="/2022/11/11/zabbix/image-20221111232105026.png" alt="image-20221111232105026"></p>
+<img src="/2022/11/11/zabbix/image-20221111232259952.png" alt="image-20221111232259952" style="zoom:150%;">
+
+
+
+<blockquote>
+<p>后面会教大家，如何在后端修改 Zabbix 的 Admin 用户的密码</p>
+</blockquote>
+<img src="/2022/11/11/zabbix/image-20221111232456595.png" alt="image-20221111232456595" style="zoom:150%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221111232832617.png" alt="image-20221111232832617" style="zoom:150%;">
+
+
+
+<blockquote>
+<p>如果 web 界面不能选择使用中文，则需要手动安装中文语言包</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">安装zh_CN语言包</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf install langpacks-zh_CN.noarch -y</span></span><br><span class="line"></span><br><span class="line">然后刷新web界面,就能选择中文了</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修改图形的数据展示（默认字体有问题）</strong></p>
+<img src="/2022/11/11/zabbix/image-20221111234231331.png" alt="image-20221111234231331" style="zoom:150%;">
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">下载字体,修改zabbix的字体支持(因为缺少zabbix所需的字体)</span><br><span class="line"><span class="comment"># 文泉仪微字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># yum install wqy-microhei-fonts -y</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝下载的字体覆盖zabbix的图形字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cp /usr/share/fonts/wqy-microhei/wqy-microhei.ttc /usr/share/zabbix/assets/fonts/graphfont.ttf </span></span><br><span class="line">cp: overwrite <span class="string">&#x27;/usr/share/zabbix/assets/fonts/graphfont.ttf&#x27;</span>? y</span><br></pre></td></tr></table></figure>
+
+
+
+<p>刷新 web 界面，可以看到乱码的中文字体生效了</p>
+<img src="/2022/11/11/zabbix/image-20221111234958289.png" alt="image-20221111234958289" style="zoom:150%;">
+
+
+
+<h2 id="修改-Zabbix-默认-Admin-用户的密码"><a href="#修改-Zabbix-默认-Admin-用户的密码" class="headerlink" title="修改 Zabbix 默认 Admin 用户的密码"></a>修改 Zabbix 默认 Admin 用户的密码</h2><blockquote>
+<p>zabbix部署后，使用默认的 Admin 账户登录，密码默认是 zabbix；</p>
+</blockquote>
+<p><strong>数据库重置 zabbix web用户</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">首先,进入zabbix数据库,查看当前users表的信息</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat </span></span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 385</span><br><span class="line">Server version: 10.3.28-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line">Reading table information <span class="keyword">for</span> completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">MariaDB [zabbix]&gt; select * from users;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 5fce1b3e34b520afeffb37ce08c7cd66 |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以看到用户表中的用户Admin的密码是通过MD5加密的</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://www.cmd5.com/">【MD5 在线加密及解密】</a></p>
+<p>通过 MD5 反解 Admin 用户的数据库密码</p>
+<p><img src="/2022/11/11/zabbix/image-20221112000032655.png" alt="image-20221112000032655"></p>
+<blockquote>
+<p>这里学习一下在 Linux 中生成 MD5 值</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以使用命令生成md5值(如下,生成明文genmd5的md5值)</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n genmd5 | openssl md5</span></span><br><span class="line">(stdin)= caf22338e37c42b2f2e9358ba6bedb04</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>手动更新 zabbix Admin 用户的密码</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">设置md5的密码为<span class="string">&#x27;Aa123!&#x27;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n Aa123! | openssl md5</span></span><br><span class="line">(stdin)= 675278e2a74b19cfa0a5f766424c67cc</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat</span></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新zabbix web用户登录密码</span></span><br><span class="line">MariaDB [zabbix]&gt; update users <span class="built_in">set</span> passwd=<span class="string">&#x27;675278e2a74b19cfa0a5f766424c67cc&#x27;</span> <span class="built_in">where</span> userid = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">Query OK, 1 row affected (0.003 sec)</span><br><span class="line">Rows matched: 1  Changed: 1  Warnings: 0</span><br><span class="line"></span><br><span class="line">MariaDB [zabbix]&gt; select * from users;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 675278e2a74b19cfa0a5f766424c67cc |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># </span></span><br><span class="line">MariaDB [zabbix]&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 0 rows affected (0.000 sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>登录测试 ！</strong></p>
+<img src="/2022/11/11/zabbix/image-20221112001106389.png" alt="image-20221112001106389" style="zoom:200%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221112001119489.png" alt="image-20221112001119489" style="zoom:150%;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%9B%91%E6%8E%A7/" rel="tag"># 监控</a>
+          
+            <a href="/tags/Zabbixe/" rel="tag"># Zabbixe</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/10/10/Linux%20Remote%20Windows%20&%20Linux/" rel="next" title="Linux 远程桌面 Windows">
+                <i class="fa fa-chevron-left"></i> Linux 远程桌面 Windows
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友链
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://xiaopan233.club/" title="Xiaopan233 Blog" target="_blank">Xiaopan233 Blog</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="www.petitstart.club" title="Petitstart'Blog" target="_blank">Petitstart'Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-zabbix-4-0-%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">安装 zabbix 4.0 版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">服务端部署流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-Zabbix-%E9%BB%98%E8%AE%A4-Admin-%E7%94%A8%E6%88%B7%E7%9A%84%E5%AF%86%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">修改 Zabbix 默认 Admin 用户的密码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LAI JUNYAN</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
