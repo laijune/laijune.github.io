@@ -1,56 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>云容器平台实战</title>
-    <url>/2022/07/01/Cloud%20Container/</url>
-    <content><![CDATA[<p><code>初始快照</code></p>
-<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署 IP，能联通外网</p>
-<p>②清除防火墙规则</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>③关闭 swap 交换分区</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
-
-<p>④路由转发</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
-
-<p>⑤物理机 scp 上传<code>Kubernetes.zip</code>文件</p>
-<p>再解压.zip文件</p>
-<p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
-<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有 Centos-xxx 文件，再配置本地 yum 源（只留这一个文件）</p>
-<p>⑦重启服务</p>
-<p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
-<p>⑧安装 docker</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="部署-MySQL-容器"><a href="#部署-MySQL-容器" class="headerlink" title="部署 MySQL 容器"></a>部署 MySQL 容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="安装-wordpress"><a href="#安装-wordpress" class="headerlink" title="安装 wordpress"></a>安装 wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>浏览器访问即可</strong></p>
-<p>IP地址/9090</p>
-<img src="/2022/07/01/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
-
-
-
-<p>后续根据需求 post 博客即可~</p>
-]]></content>
-      <categories>
-        <category>云原生</category>
-      </categories>
-      <tags>
-        <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>云AI平台实战</title>
     <url>/2022/07/07/Cloud%20AI/</url>
     <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
@@ -127,72 +77,53 @@
       </tags>
   </entry>
   <entry>
-    <title>Linux 远程桌面 Windows</title>
-    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
-    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
-<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
-<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
-<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
-<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
-<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
-<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
-<p>本次客户端安装的版本是 CentOS Stream 9</p>
-</blockquote>
-<p><strong>准备工作</strong></p>
-<ol>
-<li>配置网络，能联通外网</li>
-</ol>
-<ol start="2">
-<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
-</ol>
+    <title>云容器平台实战</title>
+    <url>/2022/07/01/Cloud%20Container/</url>
+    <content><![CDATA[<p><code>初始快照</code></p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署 IP，能联通外网</p>
+<p>②清除防火墙规则</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+
 <span id="more"></span>
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
+<p>③关闭 swap 交换分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>编译，安装</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+<p>④路由转发</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
 
-
-
-<ul>
-<li><strong><font color="blue">连接 Windows</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
+<p>⑤物理机 scp 上传<code>Kubernetes.zip</code>文件</p>
+<p>再解压.zip文件</p>
+<p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
+<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有 Centos-xxx 文件，再配置本地 yum 源（只留这一个文件）</p>
+<p>⑦重启服务</p>
+<p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
+<p>⑧安装 docker</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
 
 
 
-
-
-<ul>
-<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
+<h5 id="部署-MySQL-容器"><a href="#部署-MySQL-容器" class="headerlink" title="部署 MySQL 容器"></a>部署 MySQL 容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
-<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
+<h5 id="安装-wordpress"><a href="#安装-wordpress" class="headerlink" title="安装 wordpress"></a>安装 wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
 
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
 
+
+<p><strong>浏览器访问即可</strong></p>
+<p>IP地址/9090</p>
+<img src="/2022/07/01/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
+
+
+
+<p>后续根据需求 post 博客即可~</p>
 ]]></content>
       <categories>
-        <category>RDP</category>
+        <category>云原生</category>
       </categories>
       <tags>
-        <tag>rdesktop</tag>
+        <tag>Docker</tag>
       </tags>
   </entry>
   <entry>
@@ -293,6 +224,75 @@
       <tags>
         <tag>Docker</tag>
         <tag>TensorFlow</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 远程桌面 Windows</title>
+    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
+    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
+<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
+<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
+<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
+<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
+<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
+<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
+<p>本次客户端安装的版本是 CentOS Stream 9</p>
+</blockquote>
+<p><strong>准备工作</strong></p>
+<ol>
+<li>配置网络，能联通外网</li>
+</ol>
+<ol start="2">
+<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
+</ol>
+<span id="more"></span>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译，安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong><font color="blue">连接 Windows</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
+
+
+
+
+
+<ul>
+<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
+
+
+
+<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
+<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
+
+]]></content>
+      <categories>
+        <category>RDP</category>
+      </categories>
+      <tags>
+        <tag>rdesktop</tag>
       </tags>
   </entry>
   <entry>
