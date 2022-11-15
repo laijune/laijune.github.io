@@ -3,11 +3,11 @@
   <title>新月&#39;s Blog</title>
   
   
-  <link href="https://laijune.github.io/atom.xml" rel="self"/>
+  <link href="http://localhost:4000/atom.xml" rel="self"/>
   
-  <link href="https://laijune.github.io/"/>
+  <link href="http://localhost:4000/"/>
   <updated>2022-11-15T06:23:38.908Z</updated>
-  <id>https://laijune.github.io/</id>
+  <id>http://localhost:4000/</id>
   
   <author>
     <name>imlai</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Zabbix 监控</title>
-    <link href="https://laijune.github.io/2022/11/11/zabbix/"/>
-    <id>https://laijune.github.io/2022/11/11/zabbix/</id>
+    <link href="http://localhost:4000/2022/11/11/zabbix/"/>
+    <id>http://localhost:4000/2022/11/11/zabbix/</id>
     <published>2022-11-11T12:00:01.000Z</published>
     <updated>2022-11-15T06:23:38.908Z</updated>
     
@@ -35,17 +35,17 @@
     
     
     
-    <category term="监控" scheme="https://laijune.github.io/categories/%E7%9B%91%E6%8E%A7/"/>
+    <category term="监控" scheme="http://localhost:4000/categories/%E7%9B%91%E6%8E%A7/"/>
     
     
-    <category term="Zabbix" scheme="https://laijune.github.io/tags/Zabbix/"/>
+    <category term="Zabbix" scheme="http://localhost:4000/tags/Zabbix/"/>
     
   </entry>
   
   <entry>
     <title>Linux 远程桌面 Windows</title>
-    <link href="https://laijune.github.io/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/"/>
-    <id>https://laijune.github.io/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</id>
+    <link href="http://localhost:4000/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/"/>
+    <id>http://localhost:4000/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</id>
     <published>2022-10-14T12:00:00.000Z</published>
     <updated>2022-11-15T06:23:21.308Z</updated>
     
@@ -71,17 +71,17 @@
     
     
     
-    <category term="RDP" scheme="https://laijune.github.io/categories/RDP/"/>
+    <category term="RDP" scheme="http://localhost:4000/categories/RDP/"/>
     
     
-    <category term="rdesktop" scheme="https://laijune.github.io/tags/rdesktop/"/>
+    <category term="rdesktop" scheme="http://localhost:4000/tags/rdesktop/"/>
     
   </entry>
   
   <entry>
     <title>Windows 远程桌面 Linux</title>
-    <link href="https://laijune.github.io/2022/10/07/Windows%20Remote%20Linux/"/>
-    <id>https://laijune.github.io/2022/10/07/Windows%20Remote%20Linux/</id>
+    <link href="http://localhost:4000/2022/10/07/Windows%20Remote%20Linux/"/>
+    <id>http://localhost:4000/2022/10/07/Windows%20Remote%20Linux/</id>
     <published>2022-10-07T02:00:00.000Z</published>
     <updated>2022-11-15T06:23:18.605Z</updated>
     
@@ -102,17 +102,17 @@
     
     
     
-    <category term="RDP" scheme="https://laijune.github.io/categories/RDP/"/>
+    <category term="RDP" scheme="http://localhost:4000/categories/RDP/"/>
     
     
-    <category term="xrdp" scheme="https://laijune.github.io/tags/xrdp/"/>
+    <category term="xrdp" scheme="http://localhost:4000/tags/xrdp/"/>
     
   </entry>
   
   <entry>
     <title>机器学习</title>
-    <link href="https://laijune.github.io/2022/07/14/Machine%20learning/"/>
-    <id>https://laijune.github.io/2022/07/14/Machine%20learning/</id>
+    <link href="http://localhost:4000/2022/07/14/Machine%20learning/"/>
+    <id>http://localhost:4000/2022/07/14/Machine%20learning/</id>
     <published>2022-07-14T12:00:03.000Z</published>
     <updated>2022-11-15T06:21:57.446Z</updated>
     
@@ -125,19 +125,19 @@
     
     
     
-    <category term="人工智能" scheme="https://laijune.github.io/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="人工智能" scheme="http://localhost:4000/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="Docker" scheme="https://laijune.github.io/tags/Docker/"/>
+    <category term="Docker" scheme="http://localhost:4000/tags/Docker/"/>
     
-    <category term="TensorFlow" scheme="https://laijune.github.io/tags/TensorFlow/"/>
+    <category term="TensorFlow" scheme="http://localhost:4000/tags/TensorFlow/"/>
     
   </entry>
   
   <entry>
     <title>云AI平台实战</title>
-    <link href="https://laijune.github.io/2022/07/07/Cloud%20AI/"/>
-    <id>https://laijune.github.io/2022/07/07/Cloud%20AI/</id>
+    <link href="http://localhost:4000/2022/07/07/Cloud%20AI/"/>
+    <id>http://localhost:4000/2022/07/07/Cloud%20AI/</id>
     <published>2022-07-07T12:00:02.000Z</published>
     <updated>2022-11-15T06:16:18.038Z</updated>
     
@@ -151,17 +151,17 @@
     
     
     
-    <category term="人工智能" scheme="https://laijune.github.io/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
+    <category term="人工智能" scheme="http://localhost:4000/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
     
-    <category term="Python" scheme="https://laijune.github.io/tags/Python/"/>
+    <category term="Python" scheme="http://localhost:4000/tags/Python/"/>
     
   </entry>
   
   <entry>
     <title>云容器平台实战</title>
-    <link href="https://laijune.github.io/2022/07/01/Cloud%20Container/"/>
-    <id>https://laijune.github.io/2022/07/01/Cloud%20Container/</id>
+    <link href="http://localhost:4000/2022/07/01/Cloud%20Container/"/>
+    <id>http://localhost:4000/2022/07/01/Cloud%20Container/</id>
     <published>2022-07-01T12:00:01.000Z</published>
     <updated>2022-11-15T06:12:23.999Z</updated>
     
@@ -175,10 +175,10 @@
     
     
     
-    <category term="云原生" scheme="https://laijune.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    <category term="云原生" scheme="http://localhost:4000/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
     
     
-    <category term="Docker" scheme="https://laijune.github.io/tags/Docker/"/>
+    <category term="Docker" scheme="http://localhost:4000/tags/Docker/"/>
     
   </entry>
   

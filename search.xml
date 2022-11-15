@@ -196,6 +196,106 @@
       </tags>
   </entry>
   <entry>
+    <title>机器学习</title>
+    <url>/2022/07/14/Machine%20learning/</url>
+    <content><![CDATA[<h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
+<p><strong>② 安装docker</strong></p>
+<p>参考上篇的云容器平台实战，此处省略。。。</p>
+<span id="more"></span>
+
+
+
+<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
+<p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
+<p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
+<p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker load -i images/registry_latest.tar</span></span><br><span class="line">查看registry映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑤创建一个 registry 容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name registry -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always registry:latest</span></span><br><span class="line"></span><br><span class="line">查看容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑥ 配置仓库地址</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;insecure-registries&quot;</span>: [<span class="string">&quot;192.168.169.10:5000&quot;</span>]		<span class="comment"># 虚拟机IP:5000</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">重新加载模块、重启docker</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload</span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart docker</span></span><br><span class="line"></span><br><span class="line">访问测试</span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2</span></span><br><span class="line">&lt;a href=<span class="string">&quot;/v2/&quot;</span>&gt;Moved Permanently&lt;/a&gt;.</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2/_catalog</span></span><br><span class="line">&#123;<span class="string">&quot;repositories&quot;</span>:[]&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑦ 上传 TensorFlow 镜像</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter</span></span><br><span class="line"></span><br><span class="line">查看tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY                        TAG                  IMAGE ID            CREATED             SIZE</span><br><span class="line">daocloud.io/daocloud/tensorflow   1.14.0-py3-jupyter   fe3f97fcb6ce        3 years ago         1.34 GB</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">给tensorflow打标签</span><br><span class="line">[root@localhost ~]<span class="comment"># docker tag daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter 192.168.169.10:5000/tensorflow</span></span><br><span class="line"></span><br><span class="line">上传镜像到私有仓库</span><br><span class="line">[root@localhost ~]<span class="comment"># docker push 192.168.169.10:5000/tensorflow</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑧ 访问测试</strong></p>
+<p>浏览器 <code>http://192.168.169.10:5000/v2/_catalog</code>    </p>
+<img src="/2022/07/14/Machine%20learning/image-20220713004722801.png" alt="image-20220713004722801" style="zoom: 80%;">
+
+
+
+
+
+<h4 id="识别手写数字"><a href="#识别手写数字" class="headerlink" title="识别手写数字"></a>识别手写数字</h4><hr>
+<p><strong>① 创建 tensorflow 容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -it --name my-tensorflow -p 8888:8888 -v ~/tensorflow:/test/data daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter </span></span><br><span class="line">...output omitted...</span><br><span class="line">    Or copy and <span class="built_in">paste</span> one of these URLs:</span><br><span class="line">        http://(480dd667b304 or 127.0.0.1):8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br><span class="line"></span><br><span class="line">访问 👉 http://<span class="string">&#x27;IP地址&#x27;</span>:8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br></pre></td></tr></table></figure>
+
+<p>![image-20220713093014367](Machine learning/image-20220713093014367.png)</p>
+<p><strong>② 上传<code>mnist.npz</code>和<code>手写数字</code></strong> </p>
+<img src="/2022/07/14/Machine%20learning/image-20220713094229703.png" alt="image-20220713094229703" style="zoom:50%;">
+
+
+
+<p><strong>③ 编写模拟训练程序</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data=np.load(<span class="string">&#x27;mnist.npz&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x_train,y_train,x_test,y_test=data[<span class="string">&#x27;x_train&#x27;</span>],data[<span class="string">&#x27;y_train&#x27;</span>],data[<span class="string">&#x27;x_test&#x27;</span>],data[<span class="string">&#x27;y_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x_train = tf.keras.utils.normalize(x_train,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">x_test = tf.keras.utils.normalize(x_test,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">model = tf.keras.models.Sequential()</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten(input_shape=(<span class="number">28</span>,<span class="number">28</span>)))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">10</span>,activation=tf.nn.softmax))</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">             loss=<span class="string">&#x27;sparse_categorical_crossentropy&#x27;</span>,</span><br><span class="line">             metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(x_train,y_train,epochs=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">val_loss,val_acc=model.evaluate(x_test,y_test)</span><br><span class="line"><span class="built_in">print</span>(val_loss)</span><br><span class="line"><span class="built_in">print</span>(val_acc)</span><br><span class="line"></span><br><span class="line">model.save(<span class="string">&#x27;my_model.h5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>④ 安装imageio</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install --upgrade pip</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install imageio -i https://pypi.douban.com/simple/</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑤ 导入测试图片</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> imageio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img_data = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> image_file_name <span class="keyword">in</span> glob.glob(<span class="string">&#x27;img_?.jpg&#x27;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;loading ...&quot;</span>,image_file_name)</span><br><span class="line">        img_array = imageio.imread(image_file_name,as_gray=<span class="literal">True</span>)</span><br><span class="line">        img_data.append((<span class="number">255.0</span> - img_array.reshape(<span class="number">784</span>)) / <span class="number">255.0</span>)</span><br><span class="line">        self_data = np.array(img_data).reshape(<span class="built_in">len</span>(img_data),<span class="number">28</span>,<span class="number">28</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>⑥ 进行预测</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">pre = model.predict(self_data)</span><br><span class="line">predit=[<span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line">predit[<span class="number">0</span>]=np.argmax(pre[<span class="number">9</span>])</span><br><span class="line">predit[<span class="number">1</span>]=np.argmax(pre[<span class="number">8</span>])</span><br><span class="line">predit[<span class="number">2</span>]=np.argmax(pre[<span class="number">7</span>])</span><br><span class="line">predit[<span class="number">3</span>]=np.argmax(pre[<span class="number">6</span>])</span><br><span class="line">predit[<span class="number">4</span>]=np.argmax(pre[<span class="number">5</span>])</span><br><span class="line">predit[<span class="number">5</span>]=np.argmax(pre[<span class="number">4</span>])</span><br><span class="line">predit[<span class="number">6</span>]=np.argmax(pre[<span class="number">3</span>])</span><br><span class="line">predit[<span class="number">7</span>]=np.argmax(pre[<span class="number">2</span>])</span><br><span class="line">predit[<span class="number">8</span>]=np.argmax(pre[<span class="number">1</span>])</span><br><span class="line">predit[<span class="number">9</span>]=np.argmax(pre[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(predit)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+        <tag>TensorFlow</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Windows 远程桌面 Linux</title>
     <url>/2022/10/07/Windows%20Remote%20Linux/</url>
     <content><![CDATA[<blockquote>
@@ -550,106 +650,6 @@
       </categories>
       <tags>
         <tag>Zabbix</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>机器学习</title>
-    <url>/2022/07/14/Machine%20learning/</url>
-    <content><![CDATA[<h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
-<p><strong>② 安装docker</strong></p>
-<p>参考上篇的云容器平台实战，此处省略。。。</p>
-<span id="more"></span>
-
-
-
-<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
-<p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
-<p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
-<p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker load -i images/registry_latest.tar</span></span><br><span class="line">查看registry映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑤创建一个 registry 容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name registry -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always registry:latest</span></span><br><span class="line"></span><br><span class="line">查看容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑥ 配置仓库地址</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;insecure-registries&quot;</span>: [<span class="string">&quot;192.168.169.10:5000&quot;</span>]		<span class="comment"># 虚拟机IP:5000</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">重新加载模块、重启docker</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload</span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart docker</span></span><br><span class="line"></span><br><span class="line">访问测试</span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2</span></span><br><span class="line">&lt;a href=<span class="string">&quot;/v2/&quot;</span>&gt;Moved Permanently&lt;/a&gt;.</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2/_catalog</span></span><br><span class="line">&#123;<span class="string">&quot;repositories&quot;</span>:[]&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑦ 上传 TensorFlow 镜像</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter</span></span><br><span class="line"></span><br><span class="line">查看tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY                        TAG                  IMAGE ID            CREATED             SIZE</span><br><span class="line">daocloud.io/daocloud/tensorflow   1.14.0-py3-jupyter   fe3f97fcb6ce        3 years ago         1.34 GB</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">给tensorflow打标签</span><br><span class="line">[root@localhost ~]<span class="comment"># docker tag daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter 192.168.169.10:5000/tensorflow</span></span><br><span class="line"></span><br><span class="line">上传镜像到私有仓库</span><br><span class="line">[root@localhost ~]<span class="comment"># docker push 192.168.169.10:5000/tensorflow</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑧ 访问测试</strong></p>
-<p>浏览器 <code>http://192.168.169.10:5000/v2/_catalog</code>    </p>
-<img src="/2022/07/14/Machine%20learning/image-20220713004722801.png" alt="image-20220713004722801" style="zoom: 80%;">
-
-
-
-
-
-<h4 id="识别手写数字"><a href="#识别手写数字" class="headerlink" title="识别手写数字"></a>识别手写数字</h4><hr>
-<p><strong>① 创建 tensorflow 容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -it --name my-tensorflow -p 8888:8888 -v ~/tensorflow:/test/data daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter </span></span><br><span class="line">...output omitted...</span><br><span class="line">    Or copy and <span class="built_in">paste</span> one of these URLs:</span><br><span class="line">        http://(480dd667b304 or 127.0.0.1):8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br><span class="line"></span><br><span class="line">访问 👉 http://<span class="string">&#x27;IP地址&#x27;</span>:8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br></pre></td></tr></table></figure>
-
-<p>![image-20220713093014367](Machine learning/image-20220713093014367.png)</p>
-<p><strong>② 上传<code>mnist.npz</code>和<code>手写数字</code></strong> </p>
-<img src="/2022/07/14/Machine%20learning/image-20220713094229703.png" alt="image-20220713094229703" style="zoom:50%;">
-
-
-
-<p><strong>③ 编写模拟训练程序</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data=np.load(<span class="string">&#x27;mnist.npz&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x_train,y_train,x_test,y_test=data[<span class="string">&#x27;x_train&#x27;</span>],data[<span class="string">&#x27;y_train&#x27;</span>],data[<span class="string">&#x27;x_test&#x27;</span>],data[<span class="string">&#x27;y_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x_train = tf.keras.utils.normalize(x_train,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">x_test = tf.keras.utils.normalize(x_test,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">model = tf.keras.models.Sequential()</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten(input_shape=(<span class="number">28</span>,<span class="number">28</span>)))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">10</span>,activation=tf.nn.softmax))</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">             loss=<span class="string">&#x27;sparse_categorical_crossentropy&#x27;</span>,</span><br><span class="line">             metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(x_train,y_train,epochs=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">val_loss,val_acc=model.evaluate(x_test,y_test)</span><br><span class="line"><span class="built_in">print</span>(val_loss)</span><br><span class="line"><span class="built_in">print</span>(val_acc)</span><br><span class="line"></span><br><span class="line">model.save(<span class="string">&#x27;my_model.h5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>④ 安装imageio</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install --upgrade pip</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install imageio -i https://pypi.douban.com/simple/</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑤ 导入测试图片</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> imageio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img_data = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> image_file_name <span class="keyword">in</span> glob.glob(<span class="string">&#x27;img_?.jpg&#x27;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;loading ...&quot;</span>,image_file_name)</span><br><span class="line">        img_array = imageio.imread(image_file_name,as_gray=<span class="literal">True</span>)</span><br><span class="line">        img_data.append((<span class="number">255.0</span> - img_array.reshape(<span class="number">784</span>)) / <span class="number">255.0</span>)</span><br><span class="line">        self_data = np.array(img_data).reshape(<span class="built_in">len</span>(img_data),<span class="number">28</span>,<span class="number">28</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑥ 进行预测</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">pre = model.predict(self_data)</span><br><span class="line">predit=[<span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line">predit[<span class="number">0</span>]=np.argmax(pre[<span class="number">9</span>])</span><br><span class="line">predit[<span class="number">1</span>]=np.argmax(pre[<span class="number">8</span>])</span><br><span class="line">predit[<span class="number">2</span>]=np.argmax(pre[<span class="number">7</span>])</span><br><span class="line">predit[<span class="number">3</span>]=np.argmax(pre[<span class="number">6</span>])</span><br><span class="line">predit[<span class="number">4</span>]=np.argmax(pre[<span class="number">5</span>])</span><br><span class="line">predit[<span class="number">5</span>]=np.argmax(pre[<span class="number">4</span>])</span><br><span class="line">predit[<span class="number">6</span>]=np.argmax(pre[<span class="number">3</span>])</span><br><span class="line">predit[<span class="number">7</span>]=np.argmax(pre[<span class="number">2</span>])</span><br><span class="line">predit[<span class="number">8</span>]=np.argmax(pre[<span class="number">1</span>])</span><br><span class="line">predit[<span class="number">9</span>]=np.argmax(pre[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(predit)</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>人工智能</category>
-      </categories>
-      <tags>
-        <tag>Docker</tag>
-        <tag>TensorFlow</tag>
       </tags>
   </entry>
 </search>
