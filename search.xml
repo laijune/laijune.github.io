@@ -1,172 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>云AI平台实战</title>
+    <url>/2022/07/07/Cloud%20AI/</url>
+    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
+<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
+<p><strong>配置 YUM 源</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+
+
+<p><strong>安装软件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>配置 pip</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>安装 zbar、pyzbar、pillow</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信名片图像解码程序</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信代码</strong></p>
+<p>动态图片背景<strong>（gif）</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
+<p><strong>安装环境</strong></p>
+<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
+<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
+
+
+
+<p><strong>以下命令在cmd操作</strong>        👇</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
+
+
+
+<p><strong>安装人脸检测相关的包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写人脸识别特征程序</strong></p>
+<p><code>写一个face_1.py文件,内容如下    👇</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+
+<p>运行程序即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+
+
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>云容器平台实战</title>
-    <url>/2022/08/08/Cloud%20Container/</url>
-    <content><![CDATA[<p><code>恢复快照</code></p>
-<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署IP，能联通外网</p>
+    <url>/2022/07/01/Cloud%20Container/</url>
+    <content><![CDATA[<p><code>初始快照</code></p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署 IP，能联通外网</p>
 <p>②清除防火墙规则</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<p>③关闭swap交换分区</p>
+<p>③关闭 swap 交换分区</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
 
 <p>④路由转发</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward=1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
 
-<p>⑤物理机scp上传<code>Kubernetes.zip</code>文件</p>
+<p>⑤物理机 scp 上传<code>Kubernetes.zip</code>文件</p>
 <p>再解压.zip文件</p>
 <p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
-<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有Centos-xxx文件，再配置本地yum源（只留这一个文件）</p>
+<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有 Centos-xxx 文件，再配置本地 yum 源（只留这一个文件）</p>
 <p>⑦重启服务</p>
 <p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
-<p>⑧安装docker</p>
+<p>⑧安装 docker</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h5 id="部署MySQL容器"><a href="#部署MySQL容器" class="headerlink" title="部署MySQL容器"></a>部署MySQL容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
+<h5 id="部署-MySQL-容器"><a href="#部署-MySQL-容器" class="headerlink" title="部署 MySQL 容器"></a>部署 MySQL 容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h5 id="安装wordpress"><a href="#安装wordpress" class="headerlink" title="安装wordpress"></a>安装wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
+<h5 id="安装-wordpress"><a href="#安装-wordpress" class="headerlink" title="安装 wordpress"></a>安装 wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
+
+
 
 <p><strong>浏览器访问即可</strong></p>
 <p>IP地址/9090</p>
-<img src="/2022/08/08/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
+<img src="/2022/07/01/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
 
 
 
-<p>下面按照题目要求post博客即可~</p>
+<p>后续根据需求 post 博客即可~</p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>云原生</category>
       </categories>
       <tags>
-        <tag>容器</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Comming soon~</title>
-    <url>/2022/08/08/README/</url>
-    <content><![CDATA[<p><img src="/2022/08/08/README/redhat-logo.png" alt="redhat-logo"></p>
-]]></content>
-      <categories>
-        <category>RHCA</category>
-        <category>云计算架构师</category>
-      </categories>
-      <tags>
-        <tag>开发</tag>
-        <tag>运维</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>机器学习</title>
-    <url>/2022/08/08/Machine%20learning/</url>
-    <content><![CDATA[<h4 id="搭建私有仓库，上传tensorflow镜像"><a href="#搭建私有仓库，上传tensorflow镜像" class="headerlink" title="搭建私有仓库，上传tensorflow镜像"></a>搭建私有仓库，上传tensorflow镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
-<p><strong>② 安装docker</strong></p>
-<p>参考上篇的云容器平台实战，此处省略。。。</p>
-<span id="more"></span>
-
-
-
-<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
-<p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
-<p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
-<p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker load -i images/registry_latest.tar</span></span><br><span class="line">查看registry映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑤创建一个registry容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name registry -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always registry:latest</span></span><br><span class="line"></span><br><span class="line">查看容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑥ 配置仓库地址</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;insecure-registries&quot;</span>: [<span class="string">&quot;192.168.169.10:5000&quot;</span>]		<span class="comment"># 虚拟机IP:5000</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">重新加载模块、重启docker</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload</span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart docker</span></span><br><span class="line"></span><br><span class="line">访问测试</span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2</span></span><br><span class="line">&lt;a href=<span class="string">&quot;/v2/&quot;</span>&gt;Moved Permanently&lt;/a&gt;.</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2/_catalog</span></span><br><span class="line">&#123;<span class="string">&quot;repositories&quot;</span>:[]&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑦ 上传TensorFlow镜像</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter</span></span><br><span class="line"></span><br><span class="line">查看tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY                        TAG                  IMAGE ID            CREATED             SIZE</span><br><span class="line">daocloud.io/daocloud/tensorflow   1.14.0-py3-jupyter   fe3f97fcb6ce        3 years ago         1.34 GB</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">给tensorflow打标签</span><br><span class="line">[root@localhost ~]<span class="comment"># docker tag daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter 192.168.169.10:5000/tensorflow</span></span><br><span class="line"></span><br><span class="line">上传镜像到私有仓库</span><br><span class="line">[root@localhost ~]<span class="comment"># docker push 192.168.169.10:5000/tensorflow</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑧ 访问测试</strong></p>
-<p>浏览器 <code>http://192.168.169.10:5000/v2/_catalog</code>    </p>
-<img src="/2022/08/08/Machine%20learning/image-20220713004722801.png" alt="image-20220713004722801" style="zoom: 80%;">
-
-
-
-
-
-<h4 id="识别手写数字"><a href="#识别手写数字" class="headerlink" title="识别手写数字"></a>识别手写数字</h4><hr>
-<p><strong>① 创建 tensorflow 容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -it --name my-tensorflow -p 8888:8888 -v ~/tensorflow:/test/data daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter </span></span><br><span class="line">...output omitted...</span><br><span class="line">    Or copy and <span class="built_in">paste</span> one of these URLs:</span><br><span class="line">        http://(480dd667b304 or 127.0.0.1):8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br><span class="line"></span><br><span class="line">访问 👉 http://<span class="string">&#x27;IP地址&#x27;</span>:8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/08/08/Machine%20learning/image-20220713093014367.png" alt="image-20220713093014367"></p>
-<p><strong>② 上传<code>mnist.npz</code>和<code>手写数字</code></strong> </p>
-<img src="/2022/08/08/Machine%20learning/image-20220713094229703.png" alt="image-20220713094229703" style="zoom:50%;">
-
-
-
-<p><strong>③ 编写模拟训练程序</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data=np.load(<span class="string">&#x27;mnist.npz&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x_train,y_train,x_test,y_test=data[<span class="string">&#x27;x_train&#x27;</span>],data[<span class="string">&#x27;y_train&#x27;</span>],data[<span class="string">&#x27;x_test&#x27;</span>],data[<span class="string">&#x27;y_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x_train = tf.keras.utils.normalize(x_train,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">x_test = tf.keras.utils.normalize(x_test,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">model = tf.keras.models.Sequential()</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten(input_shape=(<span class="number">28</span>,<span class="number">28</span>)))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">10</span>,activation=tf.nn.softmax))</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">             loss=<span class="string">&#x27;sparse_categorical_crossentropy&#x27;</span>,</span><br><span class="line">             metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(x_train,y_train,epochs=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">val_loss,val_acc=model.evaluate(x_test,y_test)</span><br><span class="line"><span class="built_in">print</span>(val_loss)</span><br><span class="line"><span class="built_in">print</span>(val_acc)</span><br><span class="line"></span><br><span class="line">model.save(<span class="string">&#x27;my_model.h5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>④ 安装imageio</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install --upgrade pip</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install imageio -i https://pypi.douban.com/simple/</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑤ 导入测试图片</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> imageio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img_data = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> image_file_name <span class="keyword">in</span> glob.glob(<span class="string">&#x27;img_?.jpg&#x27;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;loading ...&quot;</span>,image_file_name)</span><br><span class="line">        img_array = imageio.imread(image_file_name,as_gray=<span class="literal">True</span>)</span><br><span class="line">        img_data.append((<span class="number">255.0</span> - img_array.reshape(<span class="number">784</span>)) / <span class="number">255.0</span>)</span><br><span class="line">        self_data = np.array(img_data).reshape(<span class="built_in">len</span>(img_data),<span class="number">28</span>,<span class="number">28</span>)</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>⑥ 进行预测</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">pre = model.predict(self_data)</span><br><span class="line">predit=[<span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line">predit[<span class="number">0</span>]=np.argmax(pre[<span class="number">9</span>])</span><br><span class="line">predit[<span class="number">1</span>]=np.argmax(pre[<span class="number">8</span>])</span><br><span class="line">predit[<span class="number">2</span>]=np.argmax(pre[<span class="number">7</span>])</span><br><span class="line">predit[<span class="number">3</span>]=np.argmax(pre[<span class="number">6</span>])</span><br><span class="line">predit[<span class="number">4</span>]=np.argmax(pre[<span class="number">5</span>])</span><br><span class="line">predit[<span class="number">5</span>]=np.argmax(pre[<span class="number">4</span>])</span><br><span class="line">predit[<span class="number">6</span>]=np.argmax(pre[<span class="number">3</span>])</span><br><span class="line">predit[<span class="number">7</span>]=np.argmax(pre[<span class="number">2</span>])</span><br><span class="line">predit[<span class="number">8</span>]=np.argmax(pre[<span class="number">1</span>])</span><br><span class="line">predit[<span class="number">9</span>]=np.argmax(pre[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(predit)</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>私有仓库</category>
-        <category>机器学习</category>
-      </categories>
-      <tags>
-        <tag>机器学习</tag>
-        <tag>docker</tag>
-        <tag>tensorflow</tag>
+        <tag>Docker</tag>
       </tags>
   </entry>
   <entry>
     <title>Linux 远程桌面 Windows</title>
-    <url>/2022/10/10/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
+    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
     <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
 <p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
 <p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
@@ -203,7 +165,7 @@
 
 
 
-<img src="/2022/10/10/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
 
 
 
@@ -214,7 +176,7 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
 
-<img src="/2022/10/10/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
 
 
 
@@ -223,87 +185,145 @@
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
 
-<img src="/2022/10/10/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
 
 ]]></content>
+      <categories>
+        <category>RDP</category>
+      </categories>
       <tags>
-        <tag>Linux</tag>
         <tag>rdesktop</tag>
       </tags>
   </entry>
   <entry>
-    <title>云AI平台实战</title>
-    <url>/2022/08/08/Cloud%20AI/</url>
-    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
-<p><strong>初始快照，配置网络，能PING通外网</strong></p>
-<p><strong>配置YUM源</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
-
+    <title>Windows 远程桌面 Linux</title>
+    <url>/2022/10/07/Windows%20Remote%20Linux/</url>
+    <content><![CDATA[<blockquote>
+<p>注意：RHEL9系列（包括rhel）的版本在安装软件时会出现不成功的情况，这应该和 rhel 的默认源和订阅有关；</p>
+<p>在 CentOS 和 CentOS Stream 系列不会出现这个问题，最小化安装和图形化安装（GUI）都可以配置</p>
+</blockquote>
+<p><strong>本次实验使用的是最小化安装，无图形界面</strong></p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
+<li>配置网络，能上外网 </li>
+</ol>
+<ol start="2">
+<li>配置 aliyun 的 epel 源，链接 <a href="http://www.aliyun.com/">www.aliyun.com</a> ，搜索 epel</li>
+</ol>
 <span id="more"></span>
 
-
-
-<p><strong>安装软件包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; 下载新repo 到/etc/yum.repos.d/【下面例子以CentOS Stream 9做演示】</span><br><span class="line"></span><br><span class="line">- 安装epel配置包</span><br><span class="line">yum install -y https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm</span><br><span class="line"><span class="comment">#注意: 如果是centos 7,则直接安装epel-release就可以安装xrdp了,不需要替换epel源,否则会提示使用yum命令失败</span></span><br><span class="line"></span><br><span class="line">- 将repo配置中的地址替换为阿里云镜像站地址</span><br><span class="line">sed -i <span class="string">&#x27;s|^#baseurl=https://download.example/pub|baseurl=https://mirrors.aliyun.com|&#x27;</span> /etc/yum.repos.d/epel*</span><br><span class="line">sed -i <span class="string">&#x27;s|^metalink|#metalink|&#x27;</span> /etc/yum.repos.d/epel*</span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>配置 pip</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装-xrdp-和-xorgxrdp"><a href="#安装-xrdp-和-xorgxrdp" class="headerlink" title="安装 xrdp 和 xorgxrdp"></a>安装 xrdp 和 xorgxrdp</h2><blockquote>
+<p><a href="http://www.xrdp.org/">Xrdp</a>是一个开源工具，允许用户通过 Windows <a href="https://so.csdn.net/so/search?q=RDP&spm=1001.2101.3001.7020">RDP</a> 访问 Linux 远程桌面。除了 Windows RDP，xrdp 工具还接受来自其他 RDP 客户端的连接，如 FreeRDP、rdesktop 和 NeutrinoRDP。Xrdp 现在支持 <a href="https://github.com/neutrinolabs/xrdp/wiki/TLS-security-layer">TLS 安全层</a>。</p>
+<p>xrdp 只是一个壳，提供一个远程连接的<strong>加密</strong>通道。</p>
+<p>Xorg 是共享机器的资源。每次连接一个新用户，都会创建一个新的session，创建一个新的桌面。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># dnf -y install xrdp xorgxrdp</span></span><br><span class="line"></span><br><span class="line">修改配置文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/xrdp/xrdp.ini</span></span><br><span class="line">...</span><br><span class="line">[Globals]</span><br><span class="line">; xrdp.ini file version number</span><br><span class="line">ini_version=1</span><br><span class="line"></span><br><span class="line">; fork a new process <span class="keyword">for</span> each incoming connection</span><br><span class="line">fork=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line">; ports to listen on, number alone means listen on all interfaces</span><br><span class="line">; 0.0.0.0 or :: <span class="keyword">if</span> ipv6 is configured</span><br><span class="line">; space between multiple occurrences</span><br><span class="line">; ALL specified interfaces must be UP when xrdp starts, otherwise xrdp will fail to start</span><br><span class="line">;</span><br><span class="line">; Examples:</span><br><span class="line">;   port=3389</span><br><span class="line">;   port=unix://./tmp/xrdp.socket</span><br><span class="line">;   port=tcp://.:3389                           127.0.0.1:3389</span><br><span class="line">;   port=tcp://:3389                            *:3389</span><br><span class="line">;   port=tcp://&lt;any ipv4 format addr&gt;:3389      192.168.1.1:3389</span><br><span class="line">;   port=tcp6://.:3389                          ::1:3389</span><br><span class="line">;   port=tcp6://:3389                           *:3389</span><br><span class="line">;   port=tcp6://&#123;&lt;any ipv6 format addr&gt;&#125;:3389   &#123;FC00:0:0:0:0:0:0:1&#125;:3389</span><br><span class="line">;   port=vsock://&lt;cid&gt;:&lt;port&gt;</span><br><span class="line">port=3389		👈	【Global】下的port是远程连接桌面时开放的端口,windows远程连接必须开放3389</span><br><span class="line"></span><br><span class="line">[Xorg]			👈	【xorg】默认是注释,不启用的;去掉<span class="string">&#x27;#&#x27;</span>,开放Xorg会话</span><br><span class="line">name=Xorg</span><br><span class="line">lib=libxup.so</span><br><span class="line">username=ask</span><br><span class="line">password=ask</span><br><span class="line">ip=127.0.0.1</span><br><span class="line">port=-1</span><br><span class="line">code=20</span><br><span class="line"></span><br><span class="line"><span class="comment">#[Xvnc]			👈	【Xvnc】默认启用Xvnc会话,注释,不启用. </span></span><br><span class="line"><span class="comment">#name=Xvnc</span></span><br><span class="line"><span class="comment">#lib=libvnc.so</span></span><br><span class="line"><span class="comment">#username=ask</span></span><br><span class="line"><span class="comment">#password=ask</span></span><br><span class="line"><span class="comment">#ip=127.0.0.1</span></span><br><span class="line"><span class="comment">#port=-1</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里选择使用 <strong>Xorg</strong> 会话而不是 Xvnc，Xvnc 好像要和 tigerVNC 配合的。我没装 tigerVNC</p>
+</blockquote>
+<ul>
+<li>开放防火墙所在区域需要远程连入端口</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --get-default-zone</span></span><br><span class="line">public</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --zone=public --add-port=3389/tcp --permanent</span></span><br><span class="line">success</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --reload</span></span><br><span class="line">success</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果需要配置公网IP连入的端口,则开放公网连接的端口即可</span></span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>安装 zbar    pyzbar    pillow</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>重启 xrdp 服务，远程接入</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/07/Windows%20Remote%20Linux/image-20221009105031756.png" alt="image-20221009105031756" style="zoom:80%;">
+
+<img src="/2022/10/07/Windows%20Remote%20Linux/image-20221009105259323.png" alt="image-20221009105259323" style="zoom:80%;">
 
 
 
-<p><strong>编写微信名片图像解码程序</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 添加用户,设置密码</span><br><span class="line">[root@localhost ~]<span class="comment"># for i in &#123;1..2&#125;; do useradd stu$i; done</span></span><br><span class="line">[root@localhost ~]<span class="comment"># for i in &#123;1..2&#125;; do echo redhat | passwd --stdin stu$i; done</span></span><br><span class="line">Changing password <span class="keyword">for</span> user stu1.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">Changing password <span class="keyword">for</span> user stu2.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>编写微信代码</strong></p>
-<p>动态图片背景<strong>（gif）</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>此时远程登录用户是会直接退出会话的，因为我们是最小化安装，还没有桌面，无法进入远程界面</strong></li>
+</ul>
+<img src="/2022/10/07/Windows%20Remote%20Linux/stu1.gif" alt="stu1" style="zoom:80%;">
 
 
 
-<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
-<p><strong>安装环境</strong></p>
-<p><code>cc网下载python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
-<img src="/2022/08/08/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
 
-<p><strong>以下命令在cmd操作</strong>        👇</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
 
-<img src="/2022/08/08/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
+<blockquote>
+<p><strong>如果是安装了图形化界面的CentOS，此时就可以直接进入自带的 GNOME 桌面了</strong></p>
+<p>GNOME 是一个完全由自由软件组成的桌面环境</p>
+</blockquote>
+<img src="/2022/10/07/Windows%20Remote%20Linux/stu1-2.gif" alt="stu1-2" style="zoom:80%;">
 
 
 
-<p><strong>安装人脸检测相关的包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+<p><strong><font color="purple">不过默认安装的GNOME桌面环境，在资源要求较高的情况下，会比较卡顿，这时可以安装openbox轻量级的图形桌面</font></strong></p>
+<h2 id="安装-openbox"><a href="#安装-openbox" class="headerlink" title="安装 openbox"></a>安装 openbox</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装openbox轻巧窗口管理器(Openbox是运行于搭载X11的GNU/Linux上的轻巧窗口管理器)</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install openbox</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 将默认openbox的配置文件做备份</span><br><span class="line">[root@localhost ~]<span class="comment"># mv /etc/X11/xinit/Xsession /etc/X11/xinit/Xsession.bak</span></span><br><span class="line"></span><br><span class="line">- 重新编写启动会话文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/X11/xinit/Xsession</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="built_in">exec</span> openbox-session			👈	开机执行Openbox桌面会话;一定要这么设置,否则是不会进入openbox桌面</span><br><span class="line"></span><br><span class="line">- 备份openbox默认xml文件</span><br><span class="line">[root@localhost ~]<span class="comment"># mv /etc/xdg/openbox/menu.xml /etc/xdg/openbox/menu.xml.bak</span></span><br><span class="line"></span><br><span class="line">- 自定义xml文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/xdg/openbox/menu.xml</span></span><br><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line"></span><br><span class="line">&lt;openbox_menu xmlns=<span class="string">&quot;http://openbox.org/3.4/menu&quot;</span>&gt;</span><br><span class="line">&lt;menu <span class="built_in">id</span>=<span class="string">&quot;root-menu&quot;</span> label=<span class="string">&quot;Openbox 3&quot;</span>&gt;</span><br><span class="line">  &lt;separator label=<span class="string">&quot;Tools&quot;</span>/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Terminal&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Execute&quot;</span>&gt;</span><br><span class="line">      &lt;<span class="built_in">command</span>&gt;xfce4-terminal&lt;/command&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;VNC Viewer&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Execute&quot;</span>&gt;</span><br><span class="line">      &lt;<span class="built_in">command</span>&gt;vncviewer&lt;/command&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;separator label=<span class="string">&quot;Others&quot;</span>/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Reconfigure&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Reconfigure&quot;</span> /&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Exit&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Exit&quot;</span>&gt;</span><br><span class="line">      &lt;prompt&gt;<span class="built_in">yes</span>&lt;/prompt&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;separator/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Log Out&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;SessionLogout&quot;</span>&gt;</span><br><span class="line">      &lt;prompt&gt;<span class="built_in">yes</span>&lt;/prompt&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">&lt;/menu&gt;</span><br><span class="line"></span><br><span class="line">&lt;/openbox_menu&gt;</span><br><span class="line"></span><br><span class="line">- 重启xrdp服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>编写人脸识别特征程序</strong></p>
-<p><code>写一个face_1.py文件,内容如下    👇</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+<p><strong>此时可以顺利进入界面了，不过进入后打开终端会提示<font color="red">没有文件或目录执行vncviewer子进程</font></strong></p>
+<img src="/2022/10/07/Windows%20Remote%20Linux/fail%20to%20execute.gif" alt="fail to execute" style="zoom:80%;">
 
-<p>运行程序即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
 
-<img src="/2022/08/08/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+
+
+<p><strong>所以我们还需安装其他的组件，以支持终端操作配置</strong></p>
+<p><strong><font color="purple">安装其它组件</font></strong></p>
+<blockquote>
+<p>xfce4-terminal 是一个轻量级和易于使用的终端模拟器应用程序</p>
+<p>Tint2 是一个轻量级面板和任务栏，它可以为任何窗口管理器提供一致的体验</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装xfce4-terminal</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install xfce4-terminal</span></span><br><span class="line"></span><br><span class="line">- 安装tint2.x86_64</span><br><span class="line"><span class="comment"># 注意: tint2软件包在高版本的 CentOS Stream9 下无法安装,这是版本过新的问题,暂时无法解决; centos 7 可以安装,centos 8 没试过</span></span><br><span class="line"><span class="string">&#x27;不过不影响,只需xfce-terminal即可顺利使用终端了&#x27;</span></span><br><span class="line"></span><br><span class="line">- 重启xrdp服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br><span class="line"></span><br><span class="line">- 因为是最小化安装,默认是没有firefox浏览器,手动安装即可!</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install firefox</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/07/Windows%20Remote%20Linux/success.gif" alt="success" style="zoom:80%;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ]]></content>
       <categories>
-        <category>云AI平台实战</category>
+        <category>RDP</category>
       </categories>
       <tags>
-        <tag>制作微信二维码</tag>
-        <tag>人脸识别</tag>
+        <tag>xrdp</tag>
       </tags>
   </entry>
   <entry>
@@ -526,115 +546,82 @@
 
 ]]></content>
       <categories>
-        <category>Linux</category>
+        <category>监控</category>
       </categories>
       <tags>
-        <tag>监控</tag>
-        <tag>Zabbixe</tag>
+        <tag>Zabbix</tag>
       </tags>
   </entry>
   <entry>
-    <title>Windows 远程桌面 Linux</title>
-    <url>/2022/10/10/Windows%20Remote%20Linux/</url>
-    <content><![CDATA[<blockquote>
-<p>注意：RHEL9系列（包括rhel）的版本在安装软件时会出现不成功的情况，这应该和 rhel 的默认源和订阅有关；</p>
-<p>在 CentOS 和 CentOS Stream 系列不会出现这个问题，最小化安装和图形化安装（GUI）都可以配置</p>
-</blockquote>
-<p><strong>本次实验使用的是最小化安装，无图形界面</strong></p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
-<li>配置网络，能上外网 </li>
-</ol>
-<ol start="2">
-<li>配置 aliyun 的 epel 源，链接 <a href="http://www.aliyun.com/">www.aliyun.com</a> ，搜索 epel</li>
-</ol>
+    <title>机器学习</title>
+    <url>/2022/07/14/Machine%20learning/</url>
+    <content><![CDATA[<h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
+<p><strong>② 安装docker</strong></p>
+<p>参考上篇的云容器平台实战，此处省略。。。</p>
 <span id="more"></span>
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; 下载新repo 到/etc/yum.repos.d/【下面例子以CentOS Stream 9做演示】</span><br><span class="line"></span><br><span class="line">- 安装epel配置包</span><br><span class="line">yum install -y https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm</span><br><span class="line"><span class="comment">#注意: 如果是centos 7,则直接安装epel-release就可以安装xrdp了,不需要替换epel源,否则会提示使用yum命令失败</span></span><br><span class="line"></span><br><span class="line">- 将repo配置中的地址替换为阿里云镜像站地址</span><br><span class="line">sed -i <span class="string">&#x27;s|^#baseurl=https://download.example/pub|baseurl=https://mirrors.aliyun.com|&#x27;</span> /etc/yum.repos.d/epel*</span><br><span class="line">sed -i <span class="string">&#x27;s|^metalink|#metalink|&#x27;</span> /etc/yum.repos.d/epel*</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
+<p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
+<p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
+<p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker load -i images/registry_latest.tar</span></span><br><span class="line">查看registry映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h2 id="安装-xrdp-和-xorgxrdp"><a href="#安装-xrdp-和-xorgxrdp" class="headerlink" title="安装 xrdp 和 xorgxrdp"></a>安装 xrdp 和 xorgxrdp</h2><blockquote>
-<p><a href="http://www.xrdp.org/">Xrdp</a>是一个开源工具，允许用户通过 Windows <a href="https://so.csdn.net/so/search?q=RDP&spm=1001.2101.3001.7020">RDP</a> 访问 Linux 远程桌面。除了 Windows RDP，xrdp 工具还接受来自其他 RDP 客户端的连接，如 FreeRDP、rdesktop 和 NeutrinoRDP。Xrdp 现在支持 <a href="https://github.com/neutrinolabs/xrdp/wiki/TLS-security-layer">TLS 安全层</a>。</p>
-<p>xrdp 只是一个壳，提供一个远程连接的<strong>加密</strong>通道。</p>
-<p>Xorg 是共享机器的资源。每次连接一个新用户，都会创建一个新的session，创建一个新的桌面。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># dnf -y install xrdp xorgxrdp</span></span><br><span class="line"></span><br><span class="line">修改配置文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/xrdp/xrdp.ini</span></span><br><span class="line">...</span><br><span class="line">[Globals]</span><br><span class="line">; xrdp.ini file version number</span><br><span class="line">ini_version=1</span><br><span class="line"></span><br><span class="line">; fork a new process <span class="keyword">for</span> each incoming connection</span><br><span class="line">fork=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line">; ports to listen on, number alone means listen on all interfaces</span><br><span class="line">; 0.0.0.0 or :: <span class="keyword">if</span> ipv6 is configured</span><br><span class="line">; space between multiple occurrences</span><br><span class="line">; ALL specified interfaces must be UP when xrdp starts, otherwise xrdp will fail to start</span><br><span class="line">;</span><br><span class="line">; Examples:</span><br><span class="line">;   port=3389</span><br><span class="line">;   port=unix://./tmp/xrdp.socket</span><br><span class="line">;   port=tcp://.:3389                           127.0.0.1:3389</span><br><span class="line">;   port=tcp://:3389                            *:3389</span><br><span class="line">;   port=tcp://&lt;any ipv4 format addr&gt;:3389      192.168.1.1:3389</span><br><span class="line">;   port=tcp6://.:3389                          ::1:3389</span><br><span class="line">;   port=tcp6://:3389                           *:3389</span><br><span class="line">;   port=tcp6://&#123;&lt;any ipv6 format addr&gt;&#125;:3389   &#123;FC00:0:0:0:0:0:0:1&#125;:3389</span><br><span class="line">;   port=vsock://&lt;cid&gt;:&lt;port&gt;</span><br><span class="line">port=3389		👈	【Global】下的port是远程连接桌面时开放的端口,windows远程连接必须开放3389</span><br><span class="line"></span><br><span class="line">[Xorg]			👈	【xorg】默认是注释,不启用的;去掉<span class="string">&#x27;#&#x27;</span>,开放Xorg会话</span><br><span class="line">name=Xorg</span><br><span class="line">lib=libxup.so</span><br><span class="line">username=ask</span><br><span class="line">password=ask</span><br><span class="line">ip=127.0.0.1</span><br><span class="line">port=-1</span><br><span class="line">code=20</span><br><span class="line"></span><br><span class="line"><span class="comment">#[Xvnc]			👈	【Xvnc】默认启用Xvnc会话,注释,不启用. </span></span><br><span class="line"><span class="comment">#name=Xvnc</span></span><br><span class="line"><span class="comment">#lib=libvnc.so</span></span><br><span class="line"><span class="comment">#username=ask</span></span><br><span class="line"><span class="comment">#password=ask</span></span><br><span class="line"><span class="comment">#ip=127.0.0.1</span></span><br><span class="line"><span class="comment">#port=-1</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这里选择使用 <strong>Xorg</strong> 会话而不是 Xvnc，Xvnc 好像要和 tigerVNC 配合的。我没装 tigerVNC</p>
-</blockquote>
-<ul>
-<li>开放防火墙所在区域需要远程连入端口</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --get-default-zone</span></span><br><span class="line">public</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --zone=public --add-port=3389/tcp --permanent</span></span><br><span class="line">success</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># firewall-cmd --reload</span></span><br><span class="line">success</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果需要配置公网IP连入的端口,则开放公网连接的端口即可</span></span><br></pre></td></tr></table></figure>
+<p><strong>⑤创建一个 registry 容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -d --name registry -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always registry:latest</span></span><br><span class="line"></span><br><span class="line">查看容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker ps</span></span><br></pre></td></tr></table></figure>
 
 
 
-<ul>
-<li>重启 xrdp 服务，远程接入</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/10/Windows%20Remote%20Linux/image-20221009105031756.png" alt="image-20221009105031756" style="zoom:80%;">
-
-<img src="/2022/10/10/Windows%20Remote%20Linux/image-20221009105259323.png" alt="image-20221009105259323" style="zoom:80%;">
+<p><strong>⑥ 配置仓库地址</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/docker/daemon.json</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;insecure-registries&quot;</span>: [<span class="string">&quot;192.168.169.10:5000&quot;</span>]		<span class="comment"># 虚拟机IP:5000</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">重新加载模块、重启docker</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload</span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart docker</span></span><br><span class="line"></span><br><span class="line">访问测试</span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2</span></span><br><span class="line">&lt;a href=<span class="string">&quot;/v2/&quot;</span>&gt;Moved Permanently&lt;/a&gt;.</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># curl http://192.168.169.10:5000/v2/_catalog</span></span><br><span class="line">&#123;<span class="string">&quot;repositories&quot;</span>:[]&#125;</span><br></pre></td></tr></table></figure>
 
 
 
+<p><strong>⑦ 上传 TensorFlow 镜像</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter</span></span><br><span class="line"></span><br><span class="line">查看tensorflow镜像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker images</span></span><br><span class="line">REPOSITORY                        TAG                  IMAGE ID            CREATED             SIZE</span><br><span class="line">daocloud.io/daocloud/tensorflow   1.14.0-py3-jupyter   fe3f97fcb6ce        3 years ago         1.34 GB</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">给tensorflow打标签</span><br><span class="line">[root@localhost ~]<span class="comment"># docker tag daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter 192.168.169.10:5000/tensorflow</span></span><br><span class="line"></span><br><span class="line">上传镜像到私有仓库</span><br><span class="line">[root@localhost ~]<span class="comment"># docker push 192.168.169.10:5000/tensorflow</span></span><br></pre></td></tr></table></figure>
 
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 添加用户,设置密码</span><br><span class="line">[root@localhost ~]<span class="comment"># for i in &#123;1..2&#125;; do useradd stu$i; done</span></span><br><span class="line">[root@localhost ~]<span class="comment"># for i in &#123;1..2&#125;; do echo redhat | passwd --stdin stu$i; done</span></span><br><span class="line">Changing password <span class="keyword">for</span> user stu1.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">Changing password <span class="keyword">for</span> user stu2.</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br></pre></td></tr></table></figure>
 
-
-
-<ul>
-<li><strong>此时远程登录用户是会直接退出会话的，因为我们是最小化安装，还没有桌面，无法进入远程界面</strong></li>
-</ul>
-<img src="/2022/10/10/Windows%20Remote%20Linux/stu1.gif" alt="stu1" style="zoom:80%;">
+<p><strong>⑧ 访问测试</strong></p>
+<p>浏览器 <code>http://192.168.169.10:5000/v2/_catalog</code>    </p>
+<img src="/2022/07/14/Machine%20learning/image-20220713004722801.png" alt="image-20220713004722801" style="zoom: 80%;">
 
 
 
 
 
-<blockquote>
-<p><strong>如果是安装了图形化界面的CentOS，此时就可以直接进入自带的 GNOME 桌面了</strong></p>
-<p>GNOME 是一个完全由自由软件组成的桌面环境</p>
-</blockquote>
-<img src="/2022/10/10/Windows%20Remote%20Linux/stu1-2.gif" alt="stu1-2" style="zoom:80%;">
+<h4 id="识别手写数字"><a href="#识别手写数字" class="headerlink" title="识别手写数字"></a>识别手写数字</h4><hr>
+<p><strong>① 创建 tensorflow 容器</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># docker run -it --name my-tensorflow -p 8888:8888 -v ~/tensorflow:/test/data daocloud.io/daocloud/tensorflow:1.14.0-py3-jupyter </span></span><br><span class="line">...output omitted...</span><br><span class="line">    Or copy and <span class="built_in">paste</span> one of these URLs:</span><br><span class="line">        http://(480dd667b304 or 127.0.0.1):8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br><span class="line"></span><br><span class="line">访问 👉 http://<span class="string">&#x27;IP地址&#x27;</span>:8888/?token=a6a8f826b5fc2e2142bd2643930b68bebf6ae790e53cd1d8</span><br></pre></td></tr></table></figure>
+
+<p>![image-20220713093014367](Machine learning/image-20220713093014367.png)</p>
+<p><strong>② 上传<code>mnist.npz</code>和<code>手写数字</code></strong> </p>
+<img src="/2022/07/14/Machine%20learning/image-20220713094229703.png" alt="image-20220713094229703" style="zoom:50%;">
 
 
 
-<p><strong><font color="purple">不过默认安装的GNOME桌面环境，在资源要求较高的情况下，会比较卡顿，这时可以安装openbox轻量级的图形桌面</font></strong></p>
-<h2 id="安装-openbox"><a href="#安装-openbox" class="headerlink" title="安装 openbox"></a>安装 openbox</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装openbox轻巧窗口管理器(Openbox是运行于搭载X11的GNU/Linux上的轻巧窗口管理器)</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install openbox</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 将默认openbox的配置文件做备份</span><br><span class="line">[root@localhost ~]<span class="comment"># mv /etc/X11/xinit/Xsession /etc/X11/xinit/Xsession.bak</span></span><br><span class="line"></span><br><span class="line">- 重新编写启动会话文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/X11/xinit/Xsession</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="built_in">exec</span> openbox-session			👈	开机执行Openbox桌面会话;一定要这么设置,否则是不会进入openbox桌面</span><br><span class="line"></span><br><span class="line">- 备份openbox默认xml文件</span><br><span class="line">[root@localhost ~]<span class="comment"># mv /etc/xdg/openbox/menu.xml /etc/xdg/openbox/menu.xml.bak</span></span><br><span class="line"></span><br><span class="line">- 自定义xml文件</span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/xdg/openbox/menu.xml</span></span><br><span class="line">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="line"></span><br><span class="line">&lt;openbox_menu xmlns=<span class="string">&quot;http://openbox.org/3.4/menu&quot;</span>&gt;</span><br><span class="line">&lt;menu <span class="built_in">id</span>=<span class="string">&quot;root-menu&quot;</span> label=<span class="string">&quot;Openbox 3&quot;</span>&gt;</span><br><span class="line">  &lt;separator label=<span class="string">&quot;Tools&quot;</span>/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Terminal&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Execute&quot;</span>&gt;</span><br><span class="line">      &lt;<span class="built_in">command</span>&gt;xfce4-terminal&lt;/command&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;VNC Viewer&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Execute&quot;</span>&gt;</span><br><span class="line">      &lt;<span class="built_in">command</span>&gt;vncviewer&lt;/command&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;separator label=<span class="string">&quot;Others&quot;</span>/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Reconfigure&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Reconfigure&quot;</span> /&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Exit&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;Exit&quot;</span>&gt;</span><br><span class="line">      &lt;prompt&gt;<span class="built_in">yes</span>&lt;/prompt&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">  &lt;separator/&gt;</span><br><span class="line">  &lt;item label=<span class="string">&quot;Log Out&quot;</span>&gt;</span><br><span class="line">    &lt;action name=<span class="string">&quot;SessionLogout&quot;</span>&gt;</span><br><span class="line">      &lt;prompt&gt;<span class="built_in">yes</span>&lt;/prompt&gt;</span><br><span class="line">    &lt;/action&gt;</span><br><span class="line">  &lt;/item&gt;</span><br><span class="line">&lt;/menu&gt;</span><br><span class="line"></span><br><span class="line">&lt;/openbox_menu&gt;</span><br><span class="line"></span><br><span class="line">- 重启xrdp服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br></pre></td></tr></table></figure>
+<p><strong>③ 编写模拟训练程序</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data=np.load(<span class="string">&#x27;mnist.npz&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x_train,y_train,x_test,y_test=data[<span class="string">&#x27;x_train&#x27;</span>],data[<span class="string">&#x27;y_train&#x27;</span>],data[<span class="string">&#x27;x_test&#x27;</span>],data[<span class="string">&#x27;y_test&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x_train = tf.keras.utils.normalize(x_train,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">x_test = tf.keras.utils.normalize(x_test,axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">model = tf.keras.models.Sequential()</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten(input_shape=(<span class="number">28</span>,<span class="number">28</span>)))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">999</span>,activation=tf.nn.relu))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">10</span>,activation=tf.nn.softmax))</span><br><span class="line"></span><br><span class="line">model.<span class="built_in">compile</span>(optimizer=<span class="string">&#x27;adam&#x27;</span>,</span><br><span class="line">             loss=<span class="string">&#x27;sparse_categorical_crossentropy&#x27;</span>,</span><br><span class="line">             metrics=[<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line"></span><br><span class="line">model.fit(x_train,y_train,epochs=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">val_loss,val_acc=model.evaluate(x_test,y_test)</span><br><span class="line"><span class="built_in">print</span>(val_loss)</span><br><span class="line"><span class="built_in">print</span>(val_acc)</span><br><span class="line"></span><br><span class="line">model.save(<span class="string">&#x27;my_model.h5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>此时可以顺利进入界面了，不过进入后打开终端会提示<font color="red">没有文件或目录执行vncviewer子进程</font></strong></p>
-<img src="/2022/10/10/Windows%20Remote%20Linux/fail%20to%20execute.gif" alt="fail to execute" style="zoom:80%;">
+<p><strong>④ 安装imageio</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install --upgrade pip</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install imageio -i https://pypi.douban.com/simple/</span><br></pre></td></tr></table></figure>
 
 
 
-
-
-<p><strong>所以我们还需安装其他的组件，以支持终端操作配置</strong></p>
-<p><strong><font color="purple">安装其它组件</font></strong></p>
-<blockquote>
-<p>xfce4-terminal 是一个轻量级和易于使用的终端模拟器应用程序</p>
-<p>Tint2 是一个轻量级面板和任务栏，它可以为任何窗口管理器提供一致的体验</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装xfce4-terminal</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install xfce4-terminal</span></span><br><span class="line"></span><br><span class="line">- 安装tint2.x86_64</span><br><span class="line"><span class="comment"># 注意: tint2软件包在高版本的 CentOS Stream9 下无法安装,这是版本过新的问题,暂时无法解决; centos 7 可以安装,centos 8 没试过</span></span><br><span class="line"><span class="string">&#x27;不过不影响,只需xfce-terminal即可顺利使用终端了&#x27;</span></span><br><span class="line"></span><br><span class="line">- 重启xrdp服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl restart xrdp</span></span><br><span class="line"></span><br><span class="line">- 因为是最小化安装,默认是没有firefox浏览器,手动安装即可!</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install firefox</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/10/Windows%20Remote%20Linux/success.gif" alt="success" style="zoom:80%;">
+<p><strong>⑤ 导入测试图片</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> imageio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img_data = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> image_file_name <span class="keyword">in</span> glob.glob(<span class="string">&#x27;img_?.jpg&#x27;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;loading ...&quot;</span>,image_file_name)</span><br><span class="line">        img_array = imageio.imread(image_file_name,as_gray=<span class="literal">True</span>)</span><br><span class="line">        img_data.append((<span class="number">255.0</span> - img_array.reshape(<span class="number">784</span>)) / <span class="number">255.0</span>)</span><br><span class="line">        self_data = np.array(img_data).reshape(<span class="built_in">len</span>(img_data),<span class="number">28</span>,<span class="number">28</span>)</span><br></pre></td></tr></table></figure>
 
 
 
-
-
-
-
-
-
-
+<p><strong>⑥ 进行预测</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">pre = model.predict(self_data)</span><br><span class="line">predit=[<span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line">predit[<span class="number">0</span>]=np.argmax(pre[<span class="number">9</span>])</span><br><span class="line">predit[<span class="number">1</span>]=np.argmax(pre[<span class="number">8</span>])</span><br><span class="line">predit[<span class="number">2</span>]=np.argmax(pre[<span class="number">7</span>])</span><br><span class="line">predit[<span class="number">3</span>]=np.argmax(pre[<span class="number">6</span>])</span><br><span class="line">predit[<span class="number">4</span>]=np.argmax(pre[<span class="number">5</span>])</span><br><span class="line">predit[<span class="number">5</span>]=np.argmax(pre[<span class="number">4</span>])</span><br><span class="line">predit[<span class="number">6</span>]=np.argmax(pre[<span class="number">3</span>])</span><br><span class="line">predit[<span class="number">7</span>]=np.argmax(pre[<span class="number">2</span>])</span><br><span class="line">predit[<span class="number">8</span>]=np.argmax(pre[<span class="number">1</span>])</span><br><span class="line">predit[<span class="number">9</span>]=np.argmax(pre[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(predit)</span><br></pre></td></tr></table></figure>
 
 
 
@@ -657,9 +644,12 @@
 
 
 ]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
       <tags>
-        <tag>Linux</tag>
-        <tag>xrdp</tag>
+        <tag>Docker</tag>
+        <tag>TensorFlow</tag>
       </tags>
   </entry>
 </search>
