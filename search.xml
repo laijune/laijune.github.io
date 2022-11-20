@@ -1,6 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>云AI平台实战</title>
+    <url>/2022/07/07/Cloud%20AI/</url>
+    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
+<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
+<p><strong>配置 YUM 源</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+
+
+<p><strong>安装软件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>配置 pip</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>安装 zbar、pyzbar、pillow</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信名片图像解码程序</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信代码</strong></p>
+<p>动态图片背景<strong>（gif）</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
+<p><strong>安装环境</strong></p>
+<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
+<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
+
+
+
+<p><strong>以下命令在cmd操作</strong>        👇</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
+
+
+
+<p><strong>安装人脸检测相关的包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写人脸识别特征程序</strong></p>
+<p><code>写一个face_1.py文件,内容如下    👇</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+
+<p>运行程序即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+
+
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>云容器平台实战</title>
     <url>/2022/07/01/Cloud%20Container/</url>
     <content><![CDATA[<p><code>初始快照</code></p>
@@ -117,82 +193,6 @@
       </categories>
       <tags>
         <tag>rdesktop</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>云AI平台实战</title>
-    <url>/2022/07/07/Cloud%20AI/</url>
-    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
-<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
-<p><strong>配置 YUM 源</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-
-
-<p><strong>安装软件包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>配置 pip</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>安装 zbar、pyzbar、pillow</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>编写微信名片图像解码程序</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>编写微信代码</strong></p>
-<p>动态图片背景<strong>（gif）</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
-<p><strong>安装环境</strong></p>
-<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
-<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
-
-
-
-<p><strong>以下命令在cmd操作</strong>        👇</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
-
-
-
-<p><strong>安装人脸检测相关的包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>编写人脸识别特征程序</strong></p>
-<p><code>写一个face_1.py文件,内容如下    👇</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
-
-<p>运行程序即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
-
-
-
-]]></content>
-      <categories>
-        <category>人工智能</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
