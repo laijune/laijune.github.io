@@ -127,6 +127,75 @@
       </tags>
   </entry>
   <entry>
+    <title>Linux 远程桌面 Windows</title>
+    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
+    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
+<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
+<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
+<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
+<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
+<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
+<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
+<p>本次客户端安装的版本是 CentOS Stream 9</p>
+</blockquote>
+<p><strong>准备工作</strong></p>
+<ol>
+<li>配置网络，能联通外网</li>
+</ol>
+<ol start="2">
+<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
+</ol>
+<span id="more"></span>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译，安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong><font color="blue">连接 Windows</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
+
+
+
+
+
+<ul>
+<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
+
+
+
+<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
+<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
+
+]]></content>
+      <categories>
+        <category>RDP</category>
+      </categories>
+      <tags>
+        <tag>rdesktop</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Kubernetes 集群部署</title>
     <url>/2022/11/23/Kubernetes%20Deploy/</url>
     <content><![CDATA[<h1 id="Kubernetes-集群部署"><a href="#Kubernetes-集群部署" class="headerlink" title="Kubernetes 集群部署"></a>Kubernetes 集群部署</h1><h2 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h2><p>4 台虚拟机，1 台 master，2 台 node，1 台 utility 是负责提供网关和集群内部通信</p>
@@ -188,13 +257,13 @@
 
 
 
-<h3 id="部署客户端"><a href="#部署客户端" class="headerlink" title="部署客户端"></a>部署客户端</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 配置utility为kubernetes客户端</span><br><span class="line">student用户登录到utility,配置kubernetes的仓库</span><br><span class="line">[student@utility ~]$ sudo -i</span><br><span class="line">[root@utility ~]<span class="comment"># cat &gt; /etc/yum.repos.d/kubernetes.repo &lt;&lt;EOF </span></span><br><span class="line">&gt; [kubernetes]</span><br><span class="line">&gt; name=Kubernetes</span><br><span class="line">&gt; baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</span><br><span class="line">&gt; enabled=1</span><br><span class="line">&gt; gpgcheck=0</span><br><span class="line">&gt; EOF</span><br><span class="line"></span><br><span class="line">查询kubectl客户端的版本,需要与集群的版本一致(1.23.0)</span><br><span class="line">[root@utility ~]<span class="comment"># yum list --showduplicates kubeadm --disableexcludes=kubernetes | grep 1.23.0</span></span><br><span class="line">kubeadm.x86_64                       1.23.0-0                         kubernetes</span><br><span class="line">[root@utility ~]<span class="comment"># yum -y install kubectl-1.23.0-0</span></span><br><span class="line"></span><br><span class="line">此时utility还不能管理k8s集群,因为默认是连接到了本地的8080端口</span><br><span class="line">[root@utility ~]<span class="comment"># kubectl get nodes</span></span><br><span class="line">The connection to the server localhost:8080 was refused - did you specify the right host or port?</span><br><span class="line"></span><br><span class="line">设置student可以管理k9s集群</span><br><span class="line">[student@utility ~]$ <span class="built_in">mkdir</span> ~/.kube</span><br><span class="line">[student@utility ~]$ scp student@cka-1:~/.kube/config .kube/</span><br><span class="line">[student@utility ~]$ <span class="built_in">chmod</span> 0600 .kube/config </span><br><span class="line"></span><br><span class="line">此时可以管理节点了</span><br><span class="line">[student@utility ~]$ kubectl get nodes</span><br><span class="line">NAME                STATUS     ROLES                  AGE   VERSION</span><br><span class="line">cka-1.example.com   NotReady   control-plane,master   71m   v1.23.0</span><br></pre></td></tr></table></figure>
+<h3 id="部署客户端"><a href="#部署客户端" class="headerlink" title="部署客户端"></a>部署客户端</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 配置utility为kubernetes客户端</span><br><span class="line">student用户登录到utility,配置kubernetes的仓库</span><br><span class="line">[student@utility ~]$ sudo -i</span><br><span class="line">[root@utility ~]<span class="comment"># cat &gt; /etc/yum.repos.d/kubernetes.repo &lt;&lt;EOF </span></span><br><span class="line">&gt; [kubernetes]</span><br><span class="line">&gt; name=Kubernetes</span><br><span class="line">&gt; baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</span><br><span class="line">&gt; enabled=1</span><br><span class="line">&gt; gpgcheck=0</span><br><span class="line">&gt; EOF</span><br><span class="line"></span><br><span class="line">查询kubectl客户端的版本,需要与集群的版本一致(1.23.0)</span><br><span class="line">[root@utility ~]<span class="comment"># yum list --showduplicates kubeadm --disableexcludes=kubernetes | grep 1.23.0</span></span><br><span class="line">kubeadm.x86_64                       1.23.0-0                         kubernetes</span><br><span class="line">[root@utility ~]<span class="comment"># yum -y install kubectl-1.23.0-0</span></span><br><span class="line"></span><br><span class="line">此时utility还不能管理k8s集群,因为默认是连接到了本地的8080端口</span><br><span class="line">[root@utility ~]<span class="comment"># kubectl get nodes</span></span><br><span class="line">The connection to the server localhost:8080 was refused - did you specify the right host or port?</span><br><span class="line"></span><br><span class="line">设置student可以管理k8s集群</span><br><span class="line">[student@utility ~]$ <span class="built_in">mkdir</span> ~/.kube</span><br><span class="line">[student@utility ~]$ scp student@cka-1:~/.kube/config .kube/</span><br><span class="line">[student@utility ~]$ <span class="built_in">chmod</span> 0600 .kube/config </span><br><span class="line"></span><br><span class="line">此时可以管理节点了</span><br><span class="line">[student@utility ~]$ kubectl get nodes</span><br><span class="line">NAME                STATUS     ROLES                  AGE   VERSION</span><br><span class="line">cka-1.example.com   NotReady   control-plane,master   71m   v1.23.0</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>结论：只要你机器上的用户家目录下有 ~/.kube/config 文件，就可以管理k8s集群了；</p>
 <p>其中 config 文件是从 /etc/kubernetes/admin.conf 拷贝的</p>
 </blockquote>
-<h3 id="添加-Node-节点"><a href="#添加-Node-节点" class="headerlink" title="添加 Node 节点"></a>添加 Node 节点</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 在master节点上获取token</span><br><span class="line">student@cka-1:~$ sudo -i</span><br><span class="line">root@cka-1:~<span class="comment"># kubeadm token create --print-join-command</span></span><br><span class="line">kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">- 在node1和node2上将上诉命令结果复制打印即可</span><br><span class="line">添加cka-2作为k8s的worker节点</span><br><span class="line">student@cka-2:~$ sudo kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">添加cka-3作为k8s的worker节点</span><br><span class="line">student@cka-3:~$ sudo kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">回到master节点上查看node状态</span><br><span class="line">student@cka-1:~$ kubectl get nodes</span><br><span class="line">NAME                STATUS     ROLES                  AGE     VERSION</span><br><span class="line">cka-1.example.com   NotReady   control-plane,master   85m     v1.23.0</span><br><span class="line">cka-2.example.com   NotReady   &lt;none&gt;                 6m20s   v1.23.0</span><br><span class="line">cka-3.example.com   NotReady   &lt;none&gt;                 3m14s   v1.23.0</span><br><span class="line"><span class="comment"># 此时状态NotReady是因为没有配置网络组件,网络不通</span></span><br></pre></td></tr></table></figure>
+<h3 id="添加-node-节点"><a href="#添加-node-节点" class="headerlink" title="添加 node 节点"></a>添加 node 节点</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 在master节点上获取token</span><br><span class="line">student@cka-1:~$ sudo -i</span><br><span class="line">root@cka-1:~<span class="comment"># kubeadm token create --print-join-command</span></span><br><span class="line">kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">- 在node1和node2上将上诉命令结果复制打印即可</span><br><span class="line">添加cka-2作为k8s的worker节点</span><br><span class="line">student@cka-2:~$ sudo kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">添加cka-3作为k8s的worker节点</span><br><span class="line">student@cka-3:~$ sudo kubeadm <span class="built_in">join</span> 192.168.19.101:6443 --token v1tyj2.krhxy0ekjxavlhes --discovery-token-ca-cert-hash sha256:19d6ec1a75bbf962e808fbd64adb4e141d1ec4c95a6b05303f70c8dafbcfc079</span><br><span class="line"></span><br><span class="line">回到master节点上查看node状态</span><br><span class="line">student@cka-1:~$ kubectl get nodes</span><br><span class="line">NAME                STATUS     ROLES                  AGE     VERSION</span><br><span class="line">cka-1.example.com   NotReady   control-plane,master   85m     v1.23.0</span><br><span class="line">cka-2.example.com   NotReady   &lt;none&gt;                 6m20s   v1.23.0</span><br><span class="line">cka-3.example.com   NotReady   &lt;none&gt;                 3m14s   v1.23.0</span><br><span class="line"><span class="comment"># 此时状态NotReady是因为没有配置网络组件,网络不通</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -444,75 +513,6 @@
       </categories>
       <tags>
         <tag>xrdp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux 远程桌面 Windows</title>
-    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
-    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
-<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
-<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
-<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
-<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
-<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
-<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
-<p>本次客户端安装的版本是 CentOS Stream 9</p>
-</blockquote>
-<p><strong>准备工作</strong></p>
-<ol>
-<li>配置网络，能联通外网</li>
-</ol>
-<ol start="2">
-<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
-</ol>
-<span id="more"></span>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>编译，安装</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li><strong><font color="blue">连接 Windows</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
-
-
-
-
-
-<ul>
-<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
-
-
-
-<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
-<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
-
-]]></content>
-      <categories>
-        <category>RDP</category>
-      </categories>
-      <tags>
-        <tag>rdesktop</tag>
       </tags>
   </entry>
   <entry>
