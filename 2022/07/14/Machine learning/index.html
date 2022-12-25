@@ -19,17 +19,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"laijune.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="搭建私有仓库，上传 tensorflow 镜像① 配置网络，能连通外网 ② 安装docker 参考上篇的云容器平台实战，此处省略。。。">
+    <meta name="description" content="搭建私有仓库，上传 tensorflow 镜像① 配置网络，能连通外网 ② 安装 docker 参考上篇的云容器平台实战，此处省略。。。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习">
 <meta property="og:url" content="https://laijune.github.io/2022/07/14/Machine%20learning/index.html">
 <meta property="og:site_name" content="Xiaolai Blog">
-<meta property="og:description" content="搭建私有仓库，上传 tensorflow 镜像① 配置网络，能连通外网 ② 安装docker 参考上篇的云容器平台实战，此处省略。。。">
+<meta property="og:description" content="搭建私有仓库，上传 tensorflow 镜像① 配置网络，能连通外网 ② 安装 docker 参考上篇的云容器平台实战，此处省略。。。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://laijune.github.io/2022/07/14/Machine%20learning/image-20220713004722801.png">
 <meta property="og:image" content="https://laijune.github.io/2022/07/14/Machine%20learning/image-20220713094229703.png">
 <meta property="article:published_time" content="2022-07-14T12:00:03.000Z">
-<meta property="article:modified_time" content="2022-11-15T06:21:58.000Z">
+<meta property="article:modified_time" content="2022-12-25T10:33:24.372Z">
 <meta property="article:author" content="imlai">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="TensorFlow">
@@ -291,7 +291,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-11-15 14:21:58" itemprop="dateModified" datetime="2022-11-15T14:21:58+08:00">2022-11-15</time>
+      <time title="Modified: 2022-12-25 18:33:24" itemprop="dateModified" datetime="2022-12-25T18:33:24+08:00">2022-12-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -329,13 +329,13 @@
     
     <div class="post-body" itemprop="articleBody">
         <h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
-<p><strong>② 安装docker</strong></p>
+<p><strong>② 安装 docker</strong></p>
 <p>参考上篇的云容器平台实战，此处省略。。。</p>
 <span id="more"></span>
 
 
 
-<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
+<p><strong>③ cc 网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
 <p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
 <p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
 <p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>

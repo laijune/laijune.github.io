@@ -288,13 +288,13 @@
     <title>机器学习</title>
     <url>/2022/07/14/Machine%20learning/</url>
     <content><![CDATA[<h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
-<p><strong>② 安装docker</strong></p>
+<p><strong>② 安装 docker</strong></p>
 <p>参考上篇的云容器平台实战，此处省略。。。</p>
 <span id="more"></span>
 
 
 
-<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
+<p><strong>③ cc 网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
 <p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
 <p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
 <p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
