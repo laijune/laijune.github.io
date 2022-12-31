@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>云容器平台实战</title>
+    <url>/2022/07/01/Cloud%20Container/</url>
+    <content><![CDATA[<p><code>初始快照</code></p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署 IP，能联通外网</p>
+<p>②清除防火墙规则</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>③关闭 swap 交换分区</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
+
+<p>④路由转发</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
+
+<p>⑤物理机 scp 上传<code>Kubernetes.zip</code>文件</p>
+<p>再解压.zip文件</p>
+<p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
+<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有 Centos-xxx 文件，再配置本地 yum 源（只留这一个文件）</p>
+<p>⑦重启服务</p>
+<p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
+<p>⑧安装 docker</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="部署-MySQL-容器"><a href="#部署-MySQL-容器" class="headerlink" title="部署 MySQL 容器"></a>部署 MySQL 容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="安装-wordpress"><a href="#安装-wordpress" class="headerlink" title="安装 wordpress"></a>安装 wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>浏览器访问即可</strong></p>
+<p>IP地址/9090</p>
+<img src="/2022/07/01/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
+
+
+
+<p>后续根据需求 post 博客即可~</p>
+]]></content>
+      <categories>
+        <category>云原生</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>云AI平台实战</title>
     <url>/2022/07/07/Cloud%20AI/</url>
     <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
@@ -166,56 +216,6 @@
       </tags>
   </entry>
   <entry>
-    <title>云容器平台实战</title>
-    <url>/2022/07/01/Cloud%20Container/</url>
-    <content><![CDATA[<p><code>初始快照</code></p>
-<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><p>①部署 IP，能联通外网</p>
-<p>②清除防火墙规则</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># iptables -F</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -X</span></span><br><span class="line">[root@localhost ~]<span class="comment"># iptables -Z</span></span><br><span class="line">[root@localhost ~]<span class="comment"># /usr/sbin/iptables-save</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/selinux/config </span></span><br><span class="line">...</span><br><span class="line">SELINUX=disabled		将enforcing改成disabled</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>③关闭 swap 交换分区</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># swapoff -a</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/fstab </span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#/dev/mapper/centos-swap swap                    swap    defaults        0 0</span></span><br><span class="line">注释这一行	↑</span><br></pre></td></tr></table></figure>
-
-<p>④路由转发</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># vim /etc/sysctl.conf </span></span><br><span class="line">...			添加以下三行	↓</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line"></span><br><span class="line">加载模块</span><br><span class="line">[root@localhost ~]<span class="comment"># modprobe br_netfilter</span></span><br><span class="line">从刚刚写的文件里读取值</span><br><span class="line">[root@localhost ~]<span class="comment"># sysctl -p</span></span><br></pre></td></tr></table></figure>
-
-<p>⑤物理机 scp 上传<code>Kubernetes.zip</code>文件</p>
-<p>再解压.zip文件</p>
-<p><code>[root@localhost ~]# unzip Kubernetes.zip </code></p>
-<p>⑥先备份<code>/etc/yum.repos.d/</code>下的所有 Centos-xxx 文件，再配置本地 yum 源（只留这一个文件）</p>
-<p>⑦重启服务</p>
-<p><code>[root@localhost Kubernetes]# systemctl restart network</code></p>
-<p>⑧安装 docker</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install docker*</span></span><br><span class="line"></span><br><span class="line">启动docker服务并设置开机自启</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br><span class="line"></span><br><span class="line">查看docker信息</span><br><span class="line">[root@localhost ~]<span class="comment"># docker info</span></span><br><span class="line"></span><br><span class="line">重启加载服务</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl daemon-reload </span></span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl start docker ; systemctl enable docker</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="部署-MySQL-容器"><a href="#部署-MySQL-容器" class="headerlink" title="部署 MySQL 容器"></a>部署 MySQL 容器</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取mysql映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull mysql</span></span><br><span class="line"></span><br><span class="line">创建mysql容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 --name db_mysql_wordpress mysql</span></span><br><span class="line"></span><br><span class="line">进入mysql容器,按题目要求创建数据库和表</span><br><span class="line">[root@localhost ~]<span class="comment"># docker exec -it db_mysql_wordpress /bin/bash</span></span><br><span class="line">bash-4.4<span class="comment"># mysql -uroot -p123456</span></span><br><span class="line"></span><br><span class="line">mysql&gt; create database SZPT;</span><br><span class="line">mysql&gt; use SZPT;</span><br><span class="line">mysql&gt; create table Cloud(stuno varchar(8),stuname varchar(8),stulaojia varchar(8),stuage varchar(2));</span><br><span class="line">mysql&gt; insert into Cloud(stuno,stuname,stulaojia,stuage) values</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940702&#x27;</span>,<span class="string">&#x27;xiaolai&#x27;</span>,<span class="string">&#x27;meizhou&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940715&#x27;</span>,<span class="string">&#x27;xiaoding&#x27;</span>,<span class="string">&#x27;hunan&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),    </span><br><span class="line">    -&gt; (<span class="string">&#x27;20940700&#x27;</span>,<span class="string">&#x27;zhiquan&#x27;</span>,<span class="string">&#x27;maoming&#x27;</span>,<span class="string">&#x27;21&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940688&#x27;</span>,<span class="string">&#x27;youjun&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940676&#x27;</span>,<span class="string">&#x27;xiaopan&#x27;</span>,<span class="string">&#x27;zhuhai&#x27;</span>,<span class="string">&#x27;20&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;18240683&#x27;</span>,<span class="string">&#x27;xixi&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;22&#x27;</span>),</span><br><span class="line">    -&gt; (<span class="string">&#x27;20940680&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;shenzhen&#x27;</span>,<span class="string">&#x27;19&#x27;</span>);</span><br><span class="line">mysql&gt; select * from Cloud <span class="built_in">where</span> Cloud.stuage=<span class="string">&#x27;20&#x27;</span>;			<span class="string">&#x27;本人年龄&#x27;</span></span><br><span class="line">    </span><br><span class="line">退出(<span class="built_in">exit</span>)</span><br><span class="line">导出<span class="string">&#x27;mysql&#x27;</span>映像tar包</span><br><span class="line">[root@localhost ~]<span class="comment"># docker save -o mysql.tar mysql</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="安装-wordpress"><a href="#安装-wordpress" class="headerlink" title="安装 wordpress"></a>安装 wordpress</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">拉取wordpress映像</span><br><span class="line">[root@localhost ~]<span class="comment"># docker pull wordpress</span></span><br><span class="line"></span><br><span class="line">创建wordpress容器</span><br><span class="line">[root@localhost ~]<span class="comment"># docker run -d --link db_mysql_wordpress -p 9090:80 --name wb_wordpress wordpress</span></span><br><span class="line"></span><br><span class="line">关闭防火墙</span><br><span class="line">[root@localhost ~]<span class="comment"># systemctl stop firewalld</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>浏览器访问即可</strong></p>
-<p>IP地址/9090</p>
-<img src="/2022/07/01/Cloud%20Container/image-20220709205122302.png" alt="image-20220709205122302" style="zoom:50%;">
-
-
-
-<p>后续根据需求 post 博客即可~</p>
-]]></content>
-      <categories>
-        <category>云原生</category>
-      </categories>
-      <tags>
-        <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux 远程桌面 Windows</title>
     <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
     <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
@@ -288,13 +288,13 @@
     <title>机器学习</title>
     <url>/2022/07/14/Machine%20learning/</url>
     <content><![CDATA[<h4 id="搭建私有仓库，上传-tensorflow-镜像"><a href="#搭建私有仓库，上传-tensorflow-镜像" class="headerlink" title="搭建私有仓库，上传 tensorflow 镜像"></a>搭建私有仓库，上传 tensorflow 镜像</h4><p><strong>① 配置网络，能连通外网</strong></p>
-<p><strong>② 安装 docker</strong></p>
+<p><strong>② 安装docker</strong></p>
 <p>参考上篇的云容器平台实战，此处省略。。。</p>
 <span id="more"></span>
 
 
 
-<p><strong>③ cc 网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
+<p><strong>③ cc网下载<code> images.zip</code>文件，上传<code> images</code>文件</strong>（<code>scp</code>，<code>WinSCP</code>，<code>XFTP</code>，<code>SecureCRT</code>)</p>
 <p>​    先在物理机解压，再上传<code>image</code>文件   👇</p>
 <p>​    <code>scp -r images root@192.168.169.10:/root</code></p>
 <p><strong>④ 将<code>registry_latest.tar</code>映像导入</strong>     </p>
