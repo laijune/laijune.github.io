@@ -1,6 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>云AI平台实战</title>
+    <url>/2022/07/07/Cloud%20AI/</url>
+    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
+<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
+<p><strong>配置 YUM 源</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+
+
+<p><strong>安装软件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>配置 pip</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>安装 zbar、pyzbar、pillow</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信名片图像解码程序</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信代码</strong></p>
+<p>动态图片背景<strong>（gif）</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
+<p><strong>安装环境</strong></p>
+<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
+<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
+
+
+
+<p><strong>以下命令在cmd操作</strong>        👇</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
+
+
+
+<p><strong>安装人脸检测相关的包</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写人脸识别特征程序</strong></p>
+<p><code>写一个face_1.py文件,内容如下    👇</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+
+<p>运行程序即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+
+
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>云容器平台实战</title>
     <url>/2022/07/01/Cloud%20Container/</url>
     <content><![CDATA[<p><code>初始快照</code></p>
@@ -48,6 +124,75 @@
       </categories>
       <tags>
         <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux 远程桌面 Windows</title>
+    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
+    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
+<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
+<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
+<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
+<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
+<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
+<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
+<p>本次客户端安装的版本是 CentOS Stream 9</p>
+</blockquote>
+<p><strong>准备工作</strong></p>
+<ol>
+<li>配置网络，能联通外网</li>
+</ol>
+<ol start="2">
+<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
+</ol>
+<span id="more"></span>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译，安装</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong><font color="blue">连接 Windows</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
+
+
+
+
+
+<ul>
+<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
+
+
+
+<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
+<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
+
+]]></content>
+      <categories>
+        <category>RDP</category>
+      </categories>
+      <tags>
+        <tag>rdesktop</tag>
       </tags>
   </entry>
   <entry>
@@ -137,75 +282,6 @@
       </categories>
       <tags>
         <tag>Kubernetes</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux 远程桌面 Windows</title>
-    <url>/2022/10/14/Linux%20Remote%20Windows%20&amp;%20Linux/</url>
-    <content><![CDATA[<p><font color="red">上一章我们尝试了 windows 远程连接 Linux 的机器，只需要在 Linux 客户端上安装 xrdp 工具并开启服务即可，这次我们尝试 Linux 连接 Windows，还有 Linux 连接 Linux . . . </font></p>
-<p>Linux 远程连接 Windows 有两种方法，rdesktop 和 freerdp；</p>
-<p>Ubuntu 安装这两种包很方便，只需 apt install rdesktop 或 apt install freerdp 即可，因为 Ubuntu 是基于 Debain 架构的；</p>
-<p>CentOS 系列安装则费劲很多，因为需要额外安装其它的依赖包</p>
-<h2 id="安装-rdesktop"><a href="#安装-rdesktop" class="headerlink" title="安装 rdesktop"></a>安装 rdesktop</h2><blockquote>
-<p><strong>rdesktop</strong> 是一个用于连接到 Windows 远程桌面服务的开源 UNIX 客户端，能够原生使用远程桌面协议 (RDP) 来呈现用户的 Windows 桌面。</p>
-<p>rdesktop 已知可与 Windows 服务器版本（从 NT 4 终端服务器到 Windows Server 2016）一起工作。</p>
-<p>本次客户端安装的版本是 CentOS Stream 9</p>
-</blockquote>
-<p><strong>准备工作</strong></p>
-<ol>
-<li>配置网络，能联通外网</li>
-</ol>
-<ol start="2">
-<li>从 github 上下载 rdesktop 的压缩包，链接 <a href="https://github.com/rdesktop/rdesktop">https://github.com/rdesktop/rdesktop</a></li>
-</ol>
-<span id="more"></span>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># wget https://github.com/rdesktop/rdesktop/releases/download/v1.9.0/rdesktop-1.9.0.tar.gz</span></span><br><span class="line"></span><br><span class="line">[root@localhost ~]<span class="comment"># tar xf rdesktop-1.9.0.tar.gz </span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd rdesktop-1.9.0/</span></span><br><span class="line"></span><br><span class="line">- 编译过程中会出现各种报错，是由于依赖的安装包未安装的原因，安装对应的依赖包即可</span><br><span class="line">- 安装缺少的依赖包</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python3-pip</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install python-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libX11-devel </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gcc g++</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install krb5-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libtasn1-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install libXcursor-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install gnutls-devel</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># python3 -m pip install gssapi</span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># dnf -y install pcsc-lite</span></span><br><span class="line">...</span><br><span class="line">Installed:</span><br><span class="line">  pcsc-lite-1.9.4-1.el9.x86_64                    pcsc-lite-ccid-1.4.36-1.el9.x86_64                    pcsc-lite-libs-1.9.4-1.el9.x86_64    </span><br><span class="line">  </span><br><span class="line">- 根据版本号需要安装对应的 pcsc-lite-devel 安装包 </span><br><span class="line">- 在此链接 http://www.rpmfind.net/linux/rpm2html/search.php?query=pcsc-lite-devel</span><br><span class="line">- 安装包选择: pcsc-lite-devel	System: centos	Arch: x86_64</span><br><span class="line">&gt; 因为我们安装pcsc的版本是1.9.4，所以选择<span class="string">&#x27;pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm&#x27;</span>版本,</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># wget http://www.rpmfind.net/linux/centos-stream/9-stream/CRB/x86_64/os/Packages/pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rpm -i pcsc-lite-devel-1.9.4-1.el9.x86_64.rpm </span></span><br><span class="line"><span class="comment"># 如果选择的版本不是一样的话,是无法安装成功的</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>编译，安装</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- okay,安装完依赖包后,再使用./configure进行编译安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># ./configure </span></span><br><span class="line">...</span><br><span class="line">configure: creating ./config.status</span><br><span class="line">config.status: creating Makefile		👈	看到这则说明编译成功了</span><br><span class="line"></span><br><span class="line">- 最后输入下面命令,完成安装</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make </span></span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># make install</span></span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li><strong><font color="blue">连接 Windows</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 使用 rdesktop 远程连接</span><br><span class="line">[root@localhost rdesktop-1.9.0]<span class="comment"># rdesktop 192.168.0.193		#客户端IP,默认是3389端口</span></span><br><span class="line">...</span><br><span class="line">Do you trust this certificate (<span class="built_in">yes</span>/no)? 【<span class="built_in">yes</span>】</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/image-20221011221251445.png" alt="image-20221011221251445" style="zoom:80%;">
-
-
-
-
-
-<ul>
-<li><strong><font color="brown">连接 Linux 服务端</font></strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 当然,Linux之间也可以通过 rdesktop 实现	<span class="comment"># 前提是服务端的Linux配置好了xrdp等服务并启动</span></span><br><span class="line">-g	指定屏幕分辨率</span><br><span class="line">-u	指定用户名</span><br><span class="line">-p 	指定密码</span><br><span class="line">[root@localhost ~]<span class="comment"># rdesktop -g 90% -u root 10.10.10.10		# 默认是3389端口</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/xrdp.gif" alt="xrdp" style="zoom:95%;">
-
-
-
-<h2 id="安装-freerdp"><a href="#安装-freerdp" class="headerlink" title="安装 freerdp"></a>安装 freerdp</h2><blockquote>
-<p>FreeRDP 是一个 Remote Desktop Protocol（协议）的一个实现，遵循Apache开源协议，支持3D功能，并有较高刷新率，也支持RemoteFX，H264编解码，用户管理，音频以及外设重定向等功能。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">- 安装freerdp软件包</span><br><span class="line">[root@localhost ~]<span class="comment"># dnf -y install freerdp</span></span><br><span class="line"></span><br><span class="line">- 然后就可以直接使用了,freerdp 在 centos 和 ubuntu 都可以直接安装</span><br><span class="line">&gt; 非交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -p passwd -v 192.168.0.193</span></span><br><span class="line"></span><br><span class="line">&gt; 交互式</span><br><span class="line">[root@localhost ~]<span class="comment"># xfreerdp -u user -v 192.168.0.193</span></span><br><span class="line">Password:【密码】</span><br><span class="line"></span><br><span class="line">-u 	指定用户名</span><br><span class="line">-p	指定密码</span><br><span class="line">-w	wide 宽</span><br><span class="line">-h	high 高</span><br><span class="line">-f 	full,屏幕全屏,但是这样不好退出哈哈,屏占比拉满😂</span><br><span class="line">- [root@localhost ~]<span class="comment"># xfreerdp -u root -p redhat -w 1920 -h 1080 -v 10.10.10.10</span></span><br></pre></td></tr></table></figure>
-
-<img src="/2022/10/14/Linux%20Remote%20Windows%20&%20Linux/freerdp.gif" alt="freerdp" style="zoom:95%;">
-
-]]></content>
-      <categories>
-        <category>RDP</category>
-      </categories>
-      <tags>
-        <tag>rdesktop</tag>
       </tags>
   </entry>
   <entry>
@@ -437,232 +513,6 @@
       </categories>
       <tags>
         <tag>xrdp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Zabbix 监控</title>
-    <url>/2022/11/11/zabbix/</url>
-    <content><![CDATA[<p>今天来部署 Zabbix 来监控我的服务器；</p>
-<blockquote>
-<p>Zabbix 官网手册：<a href="https://www.zabbix.com/cn/manuals">https://www.zabbix.com/cn/manuals</a> ；其中 LTS（Long Term Support）是长期支持版本。</p>
-<p>我们的服务器环境依旧是 <strong>CentOS Stream 8</strong>，安装 Zabbix 的版本是 <strong>4.0 LTS</strong></p>
-</blockquote>
-<h2 id="安装-zabbix-4-0-版本"><a href="#安装-zabbix-4-0-版本" class="headerlink" title="安装 zabbix 4.0 版本"></a>安装 zabbix 4.0 版本</h2><h3 id="服务端部署流程"><a href="#服务端部署流程" class="headerlink" title="服务端部署流程"></a>服务端部署流程</h3><span id="more"></span>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.安装zabbix.repo仓库文件,清华源的zabbix4版本(如果是其它操作系统,则选择对应版本的rpm包)</span><br><span class="line">[root@stream8 ~]<span class="comment"># rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/zabbix/zabbix/4.0/rhel/8/x86_64/zabbix-release-4.0-2.el8.noarch.rpm</span></span><br><span class="line"></span><br><span class="line">此时,yum仓库会多一个zabbix.repo文件</span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/yum.repos.d/zabbix.repo </span></span><br><span class="line">[zabbix]</span><br><span class="line">name=Zabbix Official Repository - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/zabbix/4.0/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591</span><br><span class="line"></span><br><span class="line">[zabbix-non-supported]</span><br><span class="line">name=Zabbix Official Repository non-supported - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/non-supported/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX</span><br><span class="line">gpgcheck=1</span><br><span class="line"></span><br><span class="line">替换zabbix的来源路径为清华的源(因为zabbix官网的服务器在国外)</span><br><span class="line">[root@stream8 ~]<span class="comment"># sed -i &#x27;s#repo.zabbix.com#mirrors.tuna.tsinghua.edu.cn/zabbix#g&#x27; /etc/yum.repos.d/zabbix.repo</span></span><br><span class="line"></span><br><span class="line">2.安装zabbix服务端(前端)、zabbix连接数据库、zabbix-agent(客户端)</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-agent mariadb-server</span></span><br><span class="line"><span class="comment"># zabbix 4.0默认是lamp,所以这一步会自动安装httpd,在5.0版本则不会安装httpd</span></span><br><span class="line"></span><br><span class="line">启动mariadb数据库,设置开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start mariadb &amp; systemctl enable mariadb</span></span><br><span class="line"></span><br><span class="line">3.设置mariadb数据库密码(默认账号是root),创建zabbix库(设置字符集是utf8),存储监控数据,且创建账号</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysqladmin password redhat	</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;create database zabbix character set utf8 collate utf8_bin;&quot;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;grant all privileges on zabbix.* to zabbix@localhost identified by &#x27;redhat&#x27;;&quot;</span></span><br><span class="line"></span><br><span class="line">测试zabbix用户</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show databases;&quot;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| zabbix             |</span><br><span class="line">+--------------------+</span><br><span class="line"></span><br><span class="line">4.导入zabbix的数据库</span><br><span class="line">这里因为Stream8版本原因,zcat读取create.sql.gz会报错<span class="string">&quot;导入的数据行太长了&quot;</span>,修改一下mysql的配置文件并重启服务即可解决;</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/my.cnf</span></span><br><span class="line">...添加下几行</span><br><span class="line">[mysqld]</span><br><span class="line">innodb_strict_mode = 0</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart mariadb</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在CentOS 7版本则不会出现以上问题</span></span><br><span class="line"><span class="comment"># 用zcat直接读取gz压缩包,管道符交给mysql命令导入数据,往zabbix库中导入数据</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -predhat zabbix</span></span><br><span class="line"></span><br><span class="line">查看导入zabbix数据库的表;</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show tables from zabbix;&quot;</span></span><br><span class="line">...</span><br><span class="line">| <span class="built_in">users</span>                      |</span><br><span class="line">| users_groups               |</span><br><span class="line">| usrgrp                     |</span><br><span class="line">| valuemaps                  |</span><br><span class="line">| widget                     |</span><br><span class="line">| widget_field               |</span><br><span class="line">+----------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5. 编辑zabbix-server服务端配置文件(修改数据库部分即可)	</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># DBHost=localhost			数据库主机,默认未开启</span></span><br><span class="line">DBHost=localhost			启动,指定为本机</span><br><span class="line"></span><br><span class="line"><span class="comment"># DBPassword=				数据库密码,默认未开启</span></span><br><span class="line">DBPassword=redhat			开启,设置zabbix数据库密码</span><br><span class="line"></span><br><span class="line">修改完,也可以直接替换源文件为以下有效的内容,直观明了</span><br><span class="line">[root@stream8 ~]<span class="comment"># grep &quot;^[a-Z]&quot; /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">LogFile=/var/log/zabbix/zabbix_server.log</span><br><span class="line">LogFileSize=0</span><br><span class="line">PidFile=/var/run/zabbix/zabbix_server.pid</span><br><span class="line">SocketDir=/var/run/zabbix</span><br><span class="line">DBHost=localhost		<span class="comment"># 指定mysql的地址</span></span><br><span class="line">DBName=zabbix			<span class="comment"># 数据库名字</span></span><br><span class="line">DBUser=zabbix			<span class="comment"># 数据库的连接用户</span></span><br><span class="line">DBPassword=redhat		<span class="comment"># 数据库密码</span></span><br><span class="line">SNMPTrapperFile=/var/log/snmptrap/snmptrap.log		<span class="comment"># 存放自定义监控项的目录</span></span><br><span class="line">Timeout=4</span><br><span class="line">AlertScriptsPath=/usr/lib/zabbix/alertscripts</span><br><span class="line">ExternalScripts=/usr/lib/zabbix/externalscripts</span><br><span class="line">LogSlowQueries=3000</span><br><span class="line"></span><br><span class="line">6.启动zabbix服务,且开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start zabbix-server &amp; systemctl enable zabbix-server</span></span><br><span class="line"></span><br><span class="line">7.检查zabbix(zabbix服务端的端口<span class="string">&#x27;10051&#x27;</span>)</span><br><span class="line">[root@stream8 ~]<span class="comment"># netstat -nltp</span></span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1131/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:10051           0.0.0.0:*               LISTEN      13601/zabbix_server </span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN      9999/mysqld         </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      1131/sshd           </span><br><span class="line">tcp6       0      0 :::10051                :::*                    LISTEN      13601/zabbix_server </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<blockquote>
-<p>至此，zabbix-server 服务端核心程序就装好了，以及 zabbix-UI 这个php程序也装好了；</p>
-<p>还需配置 web 前端，默认 zabbix 4.0 版本只支持 apache，不同 zabbix 版本 web 前端代理不一样（nginx、apache）</p>
-</blockquote>
-<p><strong>Apache 配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.修改PHP时区</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/php.ini </span></span><br><span class="line">...</span><br><span class="line">;date.timezone =				<span class="comment"># 找到时区这一行(默认是未开启的)</span></span><br><span class="line">date.timezone = Asia/Shanghai	<span class="comment"># 设置为亚洲/上海	</span></span><br><span class="line"></span><br><span class="line">如果后续手动修改了时区,需要重启php的服务</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart php-fpm</span></span><br><span class="line"></span><br><span class="line">2.重启apache服务</span><br><span class="line"><span class="comment"># 查看apache子目录zabbix的配置</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/httpd/conf.d/zabbix.conf </span></span><br><span class="line">...</span><br><span class="line">Alias /zabbix /usr/share/zabbix	 	可以看到访问/zabbix,会转发到/usr/share/zabbix目录</span><br><span class="line"></span><br><span class="line">&lt;Directory <span class="string">&quot;/usr/share/zabbix&quot;</span>&gt;</span><br><span class="line">    Options FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line"></span><br><span class="line">    &lt;FilesMatch \.(php|phar)$&gt;</span><br><span class="line">        SetHandler <span class="string">&quot;proxy:unix:/run/php-fpm/zabbix.sock|fcgi://localhost&quot;</span></span><br><span class="line">    &lt;/FilesMatch&gt;</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start httpd &amp; systemctl enable httpd</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>访问服务器的<code>IP</code>加<code>/zabbix</code></strong></p>
-<img src="/2022/11/11/zabbix/image-20221111230949455.png" alt="image-20221111230949455" style="zoom:150%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221111231310604.png" alt="image-20221111231310604" style="zoom:150%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221111231714873.png" alt="image-20221111231714873" style="zoom:150%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221111231948330.png" alt="image-20221111231948330" style="zoom:150%;">
-
-
-
-<p><img src="/2022/11/11/zabbix/image-20221111232031222.png" alt="image-20221111232031222"></p>
-<p><img src="/2022/11/11/zabbix/image-20221111232105026.png" alt="image-20221111232105026"></p>
-<img src="/2022/11/11/zabbix/image-20221111232259952.png" alt="image-20221111232259952" style="zoom:150%;">
-
-
-
-<blockquote>
-<p>后面会教大家，如何在后端修改 Zabbix 的 Admin 用户的密码</p>
-</blockquote>
-<img src="/2022/11/11/zabbix/image-20221111232456595.png" alt="image-20221111232456595" style="zoom:150%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221111232832617.png" alt="image-20221111232832617" style="zoom:150%;">
-
-
-
-<blockquote>
-<p>如果 web 界面不能选择使用中文，则需要手动安装中文语言包</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">安装zh_CN语言包</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf install langpacks-zh_CN.noarch -y</span></span><br><span class="line"></span><br><span class="line">然后刷新web界面,就能选择中文了</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>修改图形的数据展示（默认字体有问题）</strong></p>
-<img src="/2022/11/11/zabbix/image-20221111234231331.png" alt="image-20221111234231331" style="zoom:150%;">
-
-
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载字体,修改zabbix的字体支持(因为缺少zabbix所需的字体)</span><br><span class="line"><span class="comment"># 文泉仪微字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># yum install wqy-microhei-fonts -y</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝下载的字体覆盖zabbix的图形字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cp /usr/share/fonts/wqy-microhei/wqy-microhei.ttc /usr/share/zabbix/assets/fonts/graphfont.ttf </span></span><br><span class="line"><span class="built_in">cp</span>: overwrite <span class="string">&#x27;/usr/share/zabbix/assets/fonts/graphfont.ttf&#x27;</span>? y</span><br></pre></td></tr></table></figure>
-
-
-
-<p>刷新 web 界面，可以看到乱码的中文字体生效了</p>
-<img src="/2022/11/11/zabbix/image-20221111234958289.png" alt="image-20221111234958289" style="zoom:150%;">
-
-
-
-<h3 id="修改-Zabbix-默认-Admin-用户的密码"><a href="#修改-Zabbix-默认-Admin-用户的密码" class="headerlink" title="修改 Zabbix 默认 Admin 用户的密码"></a>修改 Zabbix 默认 Admin 用户的密码</h3><blockquote>
-<p>zabbix部署后，使用默认的 Admin 账户登录，密码默认是 zabbix；</p>
-</blockquote>
-<p><strong>数据库重置 zabbix web用户</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">首先,进入zabbix数据库,查看当前<span class="built_in">users</span>表的信息</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat </span></span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection <span class="built_in">id</span> is 385</span><br><span class="line">Server version: 10.3.28-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line">Reading table information <span class="keyword">for</span> completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">MariaDB [zabbix]&gt; select * from <span class="built_in">users</span>;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 5fce1b3e34b520afeffb37ce08c7cd66 |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以看到用户表中的用户Admin的密码是通过MD5加密的</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><a href="https://www.cmd5.com/">【MD5 在线加密及解密】</a></p>
-<p>通过 MD5 反解 Admin 用户的数据库密码</p>
-<p><img src="/2022/11/11/zabbix/image-20221112000032655.png" alt="image-20221112000032655"></p>
-<blockquote>
-<p>这里学习一下在 Linux 中生成 MD5 值</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 可以使用命令生成md5值(如下,生成明文genmd5的md5值)</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n genmd5 | openssl md5</span></span><br><span class="line">(stdin)= caf22338e37c42b2f2e9358ba6bedb04</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>手动更新 zabbix Admin 用户的密码</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">设置md5的密码为<span class="string">&#x27;Aa123!&#x27;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n Aa123! | openssl md5</span></span><br><span class="line">(stdin)= 675278e2a74b19cfa0a5f766424c67cc</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat</span></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新zabbix web用户登录密码</span></span><br><span class="line">MariaDB [zabbix]&gt; update <span class="built_in">users</span> <span class="built_in">set</span> passwd=<span class="string">&#x27;675278e2a74b19cfa0a5f766424c67cc&#x27;</span> <span class="built_in">where</span> userid = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">Query OK, 1 row affected (0.003 sec)</span><br><span class="line">Rows matched: 1  Changed: 1  Warnings: 0</span><br><span class="line"></span><br><span class="line">MariaDB [zabbix]&gt; select * from <span class="built_in">users</span>;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 675278e2a74b19cfa0a5f766424c67cc |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># </span></span><br><span class="line">MariaDB [zabbix]&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 0 rows affected (0.000 sec)</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>登录测试 ！</strong></p>
-<img src="/2022/11/11/zabbix/image-20221112001106389.png" alt="image-20221112001106389" style="zoom:200%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221112001119489.png" alt="image-20221112001119489" style="zoom:150%;">
-
-
-
-<h2 id="安装-zabbix-5-0-版本"><a href="#安装-zabbix-5-0-版本" class="headerlink" title="安装 zabbix 5.0 版本"></a>安装 zabbix 5.0 版本</h2><p>5.0 版本对基础环境的要求有很大的变化，最大的就是对 php 版本的要求，最低要求 7.2.0 版本，对 php 扩展组件也有要求；</p>
-<p>详见官网：<a href="https://www.zabbix.com/documentation/5.0/zh/manual/installation/requirements">https://www.zabbix.com/documentation/5.0/zh/manual/installation/requirements</a></p>
-<p><strong>环境介绍</strong></p>
-<p>1 台 server，2 台 agent，系统是 CentOS Stream 8</p>
-<p><strong>server：</strong> 10.0.0.10/24</p>
-<p><strong>agent1：</strong>10.0.0.11/24</p>
-<p><strong>agent2：</strong>10.0.0.12/24</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.环境准备</span><br><span class="line">关闭防火墙(三台机器)</span><br><span class="line">[root@server ~]<span class="comment"># sed -i &#x27;s/SELINUX=enforcing/SELINUX=disabled/&#x27; /etc/selinux/config</span></span><br><span class="line">[root@server ~]<span class="comment"># systemctl disable --now firewalld</span></span><br><span class="line"></span><br><span class="line">此时获取当前selinux防火墙的安全策略仍为Enforcing,配置文件并未生效</span><br><span class="line">[root@server ~]<span class="comment"># reboot</span></span><br><span class="line"></span><br><span class="line">获取zabbix的下载源</span><br><span class="line">[root@server ~]<span class="comment"># rpm -Uvh https://mirrors.aliyun.com/zabbix/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm</span></span><br><span class="line"></span><br><span class="line">更换zabbix.repo源</span><br><span class="line">[root@server ~]<span class="comment"># sed -i &#x27;s#http://repo.zabbix.com#https://mirrors.aliyun.com/zabbix#&#x27; /etc/yum.repos.d/zabbix.repo</span></span><br><span class="line"></span><br><span class="line">2.安装zabbix server和agent</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install zabbix-server-mysql zabbix-agent</span></span><br><span class="line"></span><br><span class="line">3.安装zabbix前端环境</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install zabbix-web-mysql zabbix-apache-conf</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<blockquote>
-<p>如果是 CentOS 7 版本，则需要安装 Software Collections，便于后续安装高版本的 php，默认 yum 安装的 php 版本为 5.4 过低。SCL（Software Collections）可以让你在同一个操作系统上安装和使用多个版本的软件，而不会影响整个系统的软件包。</p>
-<p>为了避免系统广泛冲突，包安装在 /opt/rh 目录中，例如，这允许你在 CentOS 7 机器上安装 Python3.5，而不会删除或干扰 Python 2.7.</p>
-<p><code>yum -y install centos-release-scl</code></p>
-<p><strong>这就是 zabbix 5.0 和 4.0 的区别之一，不过因为我们的系统是 CentOS Steam 8，直接安装 php 刚好就是 7.2 版本，所以不存在这个问题🤣</strong></p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">4.安裝zabbix所需的数据库</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install mariadb-server</span></span><br><span class="line"></span><br><span class="line">5.配置数据库</span><br><span class="line">[root@server ~]<span class="comment"># systemctl enable --now mariadb</span></span><br><span class="line"></span><br><span class="line">初始化数据库,设置密码</span><br><span class="line">[root@server ~]<span class="comment"># mysql_secure_installation </span></span><br><span class="line">...</span><br><span class="line">Enter current password <span class="keyword">for</span> root (enter <span class="keyword">for</span> none): 【回车,默认是空】</span><br><span class="line">OK, successfully used password, moving on...</span><br><span class="line"></span><br><span class="line">Set root password? [Y/n] y	【设置root密码】</span><br><span class="line">New password:  			【redhat】</span><br><span class="line">Re-enter new password: 		【redhat】</span><br><span class="line">Password updated successfully!</span><br><span class="line"></span><br><span class="line">Remove anonymous <span class="built_in">users</span>? [Y/n] y			【Y,移除匿名用户】</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? [Y/n] n		【n,不禁止root远程登录】</span><br><span class="line"> ... skipping.</span><br><span class="line"></span><br><span class="line">Remove <span class="built_in">test</span> database and access to it? [Y/n] y	【Y,删除<span class="built_in">test</span>数据库】</span><br><span class="line"> - Dropping <span class="built_in">test</span> database...</span><br><span class="line"> ... Success!</span><br><span class="line"> - Removing privileges on <span class="built_in">test</span> database...</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? [Y/n] y		【Y,确认刷新授权表】</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">登录数据库</span><br><span class="line">[root@server ~]<span class="comment"># mysql -uroot -predhat</span></span><br><span class="line"></span><br><span class="line">创建zabbix数据库</span><br><span class="line">MariaDB [(none)]&gt; create database zabbix character <span class="built_in">set</span> utf8 collate utf8_bin;</span><br><span class="line">Query OK, 1 row affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">添加数据库用户,以及zabbix所需的数据库信息</span><br><span class="line">MariaDB [(none)]&gt; create user zabbix@localhost identified by <span class="string">&quot;redhat&quot;</span>;</span><br><span class="line">Query OK, 0 rows affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; grant all privileges on zabbix.* to zabbix@localhost;</span><br><span class="line">Query OK, 0 rows affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; <span class="built_in">exit</span></span><br><span class="line">Bye</span><br><span class="line"></span><br><span class="line">6.使用zabbix-mysql命令,导入数据库信息</span><br><span class="line">[root@server ~]<span class="comment"># zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uzabbix -predhat zabbix</span></span><br><span class="line"></span><br><span class="line">[root@server ~]<span class="comment"># mysql -uroot -predhat -e &quot;show tables from zabbix;&quot;</span></span><br><span class="line">| <span class="built_in">users</span>                      |</span><br><span class="line">| users_groups               |</span><br><span class="line">| usrgrp                     |</span><br><span class="line">| valuemaps                  |</span><br><span class="line">| widget                     |</span><br><span class="line">| widget_field               |</span><br><span class="line">+----------------------------+</span><br><span class="line"></span><br><span class="line">7.修改zabbix server配置文件,修改数据库密码</span><br><span class="line">[root@server ~]<span class="comment"># vim /etc/zabbix/zabbix_server.conf </span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># DBPassword=</span></span><br><span class="line">DBPassword=redhat					<span class="comment"># 指定数据库密码</span></span><br><span class="line"></span><br><span class="line">8.修改zabbix的php配置文件</span><br><span class="line">[root@server ~]<span class="comment"># vim /etc/php-fpm.d/zabbix.conf </span></span><br><span class="line">; php_value[date.timezone] = Europe/Riga		<span class="comment"># 默认是注释的&quot;;&quot;</span></span><br><span class="line">php_value[date.timezone] = Asia/Shanghai		<span class="comment"># 将时区改成亚洲/上海</span></span><br><span class="line"></span><br><span class="line">9.启动zabbix服务</span><br><span class="line"><span class="comment"># zabbix前端请求是交给php解析</span></span><br><span class="line">[root@server ~]<span class="comment"># ls /etc/systemd/system | grep php</span></span><br><span class="line">php-fpm.service.d</span><br><span class="line">[root@server ~]<span class="comment"># systemctl start zabbix-server zabbix-agent httpd php-fpm </span></span><br><span class="line">[root@server ~]<span class="comment"># systemctl enable zabbix-server zabbix-agent httpd php-fpm</span></span><br><span class="line"></span><br><span class="line">10.访问zabbix界面,和4.0一致,IP + /zabbix</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/11/11/zabbix/image-20221114141325025.png" alt="image-20221114141325025" style="zoom:150%;">
-
-
-
-<p>后续步骤参考 zabbix4.0</p>
-<img src="/2022/11/11/zabbix/image-20221114141628067.png" alt="image-20221114141628067" style="zoom:150%;">
-
-
-
-<img src="/2022/11/11/zabbix/image-20221114141857519.png" alt="image-20221114141857519" style="zoom: 200%;">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>监控</category>
-      </categories>
-      <tags>
-        <tag>Zabbix</tag>
       </tags>
   </entry>
   <entry>
@@ -2412,7 +2262,7 @@
 <p>​                                                                                        <img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230101170101056.png" alt="image-20230101170101056"></p>
 <p>​                                                                                                                    <strong>七层负载均衡</strong></p>
 <p>​                                                                                            监听 HTTP 与 HTTPS，基于内容（域名/URL）转发</p>
-<p>​                                                                          ![image-20230101170225270](Tencent Cloud Practitioner/image-20230101170225270.png)</p>
+<p>​                                                                                      <img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230101170225270.png" alt="image-20230101170225270" style="zoom: 80%;"></p>
 <table>
 <thead>
 <tr>
@@ -2666,7 +2516,10 @@
 </ul>
 </li>
 </ul>
-<p>![image-20230101203227596](Tencent Cloud Practitioner/image-20230101203227596.png)</p>
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230101203227596.png" alt="image-20230101203227596" style="zoom:80%;">
+
+
+
 <h3 id="CDN-访问原理"><a href="#CDN-访问原理" class="headerlink" title="CDN 访问原理"></a>CDN 访问原理</h3><ul>
 <li>传统访问原理</li>
 </ul>
@@ -3403,8 +3256,7 @@
 <ul>
 <li>问道游戏，英雄之刃等国内TOP游戏/开发商</li>
 </ul>
-<p>![image-20230102142035309](Tencent Cloud Practitioner/image-20230102142035309.png)</p>
-</li>
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102142035309.png" alt="image-20230102142035309" style="zoom:95%;"></li>
 <li><p>业务特点</p>
 <ul>
 <li>每日19-22点，凌晨3-5点，业务访问的高峰区，存储压力大</li>
@@ -4009,9 +3861,12 @@
 </tbody></table>
 <p><strong>硬盘快照</strong>按总存储容量进行收费，每个地域单独结算，目前仅支持按量计费后付费方式，以小时为单位整点结算，国内主要区域提供一定量的免费额度。</p>
 <ul>
-<li>CBS定价基于<strong>硬盘类型、所在地域与计费方式</strong>。此处价格仅供参考，以官网价格为准。】</li>
+<li>CBS 定价基于<strong>硬盘类型、所在地域与计费方式</strong>。此处价格仅供参考，以官网价格为准。</li>
 </ul>
-<p>![image-20230102154037747](Tencent Cloud Practitioner/image-20230102154037747.png)</p>
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102154037747.png" alt="image-20230102154037747" style="zoom:75%;">
+
+
+
 <h3 id="CFS-计费方案"><a href="#CFS-计费方案" class="headerlink" title="CFS 计费方案"></a>CFS 计费方案</h3><ul>
 <li><p><strong>按量付费：</strong>基于文件实际存储容量，按小时计费和计算；</p>
 </li>
@@ -4024,7 +3879,10 @@
 <li><p>某企业拥有20台云主机（CVM），分别访问中国香港的2个文件系统。文件系统 A 用于冷数据存储，存储量为3T，且无增长。文件系统 B 用于企业云盘，某小时中存储量峰值为1.5 TB。<strong>请问该小时该用户CFS费用如何计算？</strong></p>
 </li>
 </ul>
-<p>![image-20230102154844029](Tencent Cloud Practitioner/image-20230102154844029.png)</p>
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102154844029.png" alt="image-20230102154844029" style="zoom:75%;">
+
+
+
 <h3 id="COS-计费方案"><a href="#COS-计费方案" class="headerlink" title="COS 计费方案"></a>COS 计费方案</h3><ul>
 <li><p><strong>计费方案：</strong></p>
 <ul>
@@ -5651,7 +5509,10 @@
 </ul>
 </li>
 </ul>
-<p>![image-20230102212237503](Tencent Cloud Practitioner/image-20230102212237503.png)</p>
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102212237503.png" alt="image-20230102212237503" style="zoom:95%;">
+
+
+
 <h2 id="主机安全产品"><a href="#主机安全产品" class="headerlink" title="主机安全产品"></a>主机安全产品</h2><h3 id="主机安全主要功能"><a href="#主机安全主要功能" class="headerlink" title="主机安全主要功能"></a>主机安全主要功能</h3><ul>
 <li>企业主机安全管理面临的挑战</li>
 </ul>
@@ -5730,7 +5591,7 @@
 <li><strong>攻击中：</strong>识别与拦截恶意攻击、垃圾访问</li>
 <li><strong>攻击后：</strong>通过云备份保障网页内容的正常显示。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232106973.png" alt="image-20230102232106973" style="zoom: 80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232106973.png" alt="image-20230102232106973" style="zoom: 80%;">
 
 
 
@@ -5742,14 +5603,14 @@
 </ul>
 </li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232151932.png" alt="image-20230102232151932" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232151932.png" alt="image-20230102232151932" style="zoom:80%;">
 
 
 
 <ul>
 <li><strong>WAF 常用策略：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232220404.png" alt="image-20230102232220404" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232220404.png" alt="image-20230102232220404" style="zoom:65%;">
 
 
 
@@ -5758,25 +5619,25 @@
 <h3 id="WAF-产品优势"><a href="#WAF-产品优势" class="headerlink" title="WAF 产品优势"></a>WAF 产品优势</h3><ul>
 <li><strong>久经考验的Web业务安全防护实践体系</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232302039.png" alt="image-20230102232302039" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232302039.png" alt="image-20230102232302039" style="zoom:65%;">
 
 
 
 <ul>
 <li><strong>AI + 规则 双引擎检测</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232327219.png" alt="image-20230102232327219" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232327219.png" alt="image-20230102232327219" style="zoom: 65%;">
 
 
 
 <ul>
 <li>自身高性能、高可靠</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232351236.png" alt="image-20230102232351236" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232351236.png" alt="image-20230102232351236" style="zoom:65%;">
 
 
 
-<h3 id="WAF-应用场景"><a href="#WAF-应用场景" class="headerlink" title="WAF 应用场景"></a>WAF 应用场景</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232403660.png" alt="image-20230102232403660" style="zoom:80%;">
+<h3 id="WAF-应用场景"><a href="#WAF-应用场景" class="headerlink" title="WAF 应用场景"></a>WAF 应用场景</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232403660.png" alt="image-20230102232403660" style="zoom: 50%;">
 
 
 
@@ -5784,88 +5645,88 @@
 <li><strong>WAF 费用：</strong>基础防护套餐 + 扩展包</li>
 <li><strong>付费方式：</strong>按月预付费</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232449900.png" alt="image-20230102232449900" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232449900.png" alt="image-20230102232449900" style="zoom:67%;">
 
 
 
 <h3 id="Web-漏洞扫描"><a href="#Web-漏洞扫描" class="headerlink" title="Web 漏洞扫描"></a>Web 漏洞扫描</h3><ul>
 <li>腾讯云 Web 漏洞扫描是用于监测网站漏洞的安全服务，为企业提供 7 * 24 小时全面准确的漏洞监测和专业的修复建议。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102232513445.png" alt="image-20230102232513445" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102232513445.png" alt="image-20230102232513445" style="zoom:80%;">
 
 <ul>
 <li>Web 漏洞扫描按域名的扫描次数进行收费，预付费。</li>
 </ul>
-<h2 id="业务安全产品"><a href="#业务安全产品" class="headerlink" title="业务安全产品"></a>业务安全产品</h2><h3 id="业务安全防护方案"><a href="#业务安全防护方案" class="headerlink" title="业务安全防护方案"></a>业务安全防护方案</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233211209.png" alt="image-20230102233211209" style="zoom:50%;">
+<h2 id="业务安全产品"><a href="#业务安全产品" class="headerlink" title="业务安全产品"></a>业务安全产品</h2><h3 id="业务安全防护方案"><a href="#业务安全防护方案" class="headerlink" title="业务安全防护方案"></a>业务安全防护方案</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233211209.png" alt="image-20230102233211209" style="zoom:50%;">
 
 
 
 <h3 id="天御业务安全"><a href="#天御业务安全" class="headerlink" title="天御业务安全"></a>天御业务安全</h3><ul>
 <li><strong>黑产（薅羊毛）已经产业化：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233246220.png" alt="image-20230102233246220" style="zoom: 67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233246220.png" alt="image-20230102233246220" style="zoom: 60%;">
 
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233259775.png" alt="image-20230102233259775" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233259775.png" alt="image-20230102233259775" style="zoom:60%;">
 
 
 
 <h4 id="注册保护"><a href="#注册保护" class="headerlink" title="注册保护"></a>注册保护</h4><ul>
 <li><strong>注册保护流程：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233333959.png" alt="image-20230102233333959" style="zoom:50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233333959.png" alt="image-20230102233333959" style="zoom:50%;">
 
 
 
 <h4 id="登录保护"><a href="#登录保护" class="headerlink" title="登录保护"></a>登录保护</h4><ul>
 <li>登录保护服务（LoginProtection，LP）针对网站和 APP 的用户登录场景，实时检测是否存在盗号、撞库等恶意登录行为，帮助开发者发现异常登录，降低恶意用户登录给业务带来的风险。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233403060.png" alt="image-20230102233403060" style="zoom: 67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233403060.png" alt="image-20230102233403060" style="zoom: 67%;">
 
 
 
 <h4 id="活动防刷"><a href="#活动防刷" class="headerlink" title="活动防刷"></a>活动防刷</h4><ul>
 <li><strong>防刷流程（登录、注册、活动）：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233433264.png" alt="image-20230102233433264" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233433264.png" alt="image-20230102233433264" style="zoom:60%;">
 
 
 
 <h4 id="营销风控"><a href="#营销风控" class="headerlink" title="营销风控"></a>营销风控</h4><ul>
 <li>利用微信、QQ 等平台进行一物一码营销，发放红包、实物等奖励，营销风控帮助您进行风险识别和拦截，精准打击羊毛党、黄牛党，最大程度上提升商家的资金利用率，减少不必要的损失。使得真实用户能较为便捷地获得较大利益，从而提升用户粘性，加大品牌影响力<strong>：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233503523.png" alt="image-20230102233503523" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233503523.png" alt="image-20230102233503523" style="zoom:67%;">
 
 
 
 <h4 id="验证码服务"><a href="#验证码服务" class="headerlink" title="验证码服务"></a>验证码服务</h4><ul>
 <li>腾讯云验证码服务 （Captcha）是针对网站、App 开发者提供安全智能的验证码服务，基于腾讯多年技术沉淀，最大程度地保护业务安全。同时便捷的设计可以减少交互，让开发者不再担心因验证码难以识别而导致用户流失</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233527649.png" alt="image-20230102233527649" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233527649.png" alt="image-20230102233527649" style="zoom:80%;">
 
 
 
-<h4 id="活动防刷-营销风控技术原理"><a href="#活动防刷-营销风控技术原理" class="headerlink" title="活动防刷 / 营销风控技术原理"></a>活动防刷 / 营销风控技术原理</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233618290.png" alt="image-20230102233618290" style="zoom: 60%;">
+<h4 id="活动防刷-营销风控技术原理"><a href="#活动防刷-营销风控技术原理" class="headerlink" title="活动防刷 / 营销风控技术原理"></a>活动防刷 / 营销风控技术原理</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233618290.png" alt="image-20230102233618290" style="zoom: 60%;">
 
 
 
 <h4 id="天御业务安全防护方案优势"><a href="#天御业务安全防护方案优势" class="headerlink" title="天御业务安全防护方案优势"></a>天御业务安全防护方案优势</h4><ul>
 <li>基于腾讯在电商、金融、社交、游戏等行业的运营和对抗经验。积累了业内领先的对抗模型和黑产大数据。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233703799.png" alt="image-20230102233703799" style="zoom: 50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233703799.png" alt="image-20230102233703799" style="zoom: 50%;">
 
 
 
 <h3 id="天域借贷反欺诈服务"><a href="#天域借贷反欺诈服务" class="headerlink" title="天域借贷反欺诈服务"></a>天域借贷反欺诈服务</h3><ul>
 <li><strong>金融风控关键挑战：</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233744511.png" alt="image-20230102233744511" style="zoom: 50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233744511.png" alt="image-20230102233744511" style="zoom: 50%;">
 
 
 
 <h4 id="借贷反欺诈-AF"><a href="#借贷反欺诈-AF" class="headerlink" title="借贷反欺诈 AF"></a>借贷反欺诈 AF</h4><ul>
 <li>天御借贷反欺诈（AntiFraud，AF）专注于识别金融行业的欺诈风险。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233819990.png" alt="image-20230102233819990" style="zoom: 50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233819990.png" alt="image-20230102233819990" style="zoom: 50%;">
 
 
 
@@ -5873,21 +5734,21 @@
 <li>输入手机号、ip、手机设备标识、身份证号、银行卡等信息；</li>
 <li>天御返回风险等级，取值0-100，值越大表示风险等级越高。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233912259.png" alt="image-20230102233912259" style="zoom: 67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233912259.png" alt="image-20230102233912259" style="zoom: 67%;">
 
 
 
 <h4 id="天御借贷反欺诈优势"><a href="#天御借贷反欺诈优势" class="headerlink" title="天御借贷反欺诈优势"></a>天御借贷反欺诈优势</h4><ul>
 <li><strong>实战经验：</strong>应用与丰富的金融服务，连接亿万用户</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102233951990.png" alt="image-20230102233951990" style="zoom: 67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102233951990.png" alt="image-20230102233951990" style="zoom: 67%;">
 
 
 
 <ul>
 <li><strong>AI + 大数据：</strong>从上千维度中选择40余个数据维度，有效识别业务的欺诈风险。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234020881.png" alt="image-20230102234020881" style="zoom: 50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234020881.png" alt="image-20230102234020881" style="zoom: 50%;">
 
 
 
@@ -5899,7 +5760,7 @@
 </ul>
 </li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234125056.png" alt="image-20230102234125056" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234125056.png" alt="image-20230102234125056" style="zoom:67%;">
 
 
 
@@ -5935,7 +5796,7 @@
 <h2 id="移动安全产品——应用安全"><a href="#移动安全产品——应用安全" class="headerlink" title="移动安全产品——应用安全"></a>移动安全产品——应用安全</h2><h3 id="应用安全概述"><a href="#应用安全概述" class="headerlink" title="应用安全概述"></a>应用安全概述</h3><ul>
 <li>什么是APP漏洞？又能有什么危害？</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234322868.png" alt="image-20230102234322868" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234322868.png" alt="image-20230102234322868" style="zoom:67%;">
 
 <p>​                                                            2016年央视315，现场演示监听APP流量，曝光用户隐私的过程。应用若存在漏洞，风险可窥一斑。</p>
 <ul>
@@ -5953,52 +5814,52 @@
 </ul>
 </li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234510198.png" alt="image-20230102234510198" style="zoom: 50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234510198.png" alt="image-20230102234510198" style="zoom: 50%;">
 
 <p>​                                                                                                        数据来源：腾讯云应用安全的2016年统计</p>
 <ul>
 <li>腾讯云移动应用安全提供全生命周期的一站式安全解决方案。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234600758.png" alt="image-20230102234600758" style="zoom:50%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234600758.png" alt="image-20230102234600758" style="zoom:50%;">
 
 
 
 <h3 id="MS-技术原理"><a href="#MS-技术原理" class="headerlink" title="MS 技术原理"></a>MS 技术原理</h3><ul>
 <li><strong>腾讯自研漏洞扫描引擎</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234639196.png" alt="image-20230102234639196" style="zoom: 67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234639196.png" alt="image-20230102234639196" style="zoom: 67%;">
 
 
 
 <ul>
 <li><strong>应用加固服务</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234715086.png" alt="image-20230102234715086" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234715086.png" alt="image-20230102234715086" style="zoom:67%;">
 
 
 
-<h3 id="MS-产品优势"><a href="#MS-产品优势" class="headerlink" title="MS 产品优势"></a>MS 产品优势</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234731774.png" alt="image-20230102234731774" style="zoom:50%;">
+<h3 id="MS-产品优势"><a href="#MS-产品优势" class="headerlink" title="MS 产品优势"></a>MS 产品优势</h3><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234731774.png" alt="image-20230102234731774" style="zoom:50%;">
 
 
 
 <h3 id="MS-应用场景"><a href="#MS-应用场景" class="headerlink" title="MS 应用场景"></a>MS 应用场景</h3><ul>
 <li><strong>1. 应用自主研发</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234757497.png" alt="image-20230102234757497" style="zoom:60%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234757497.png" alt="image-20230102234757497" style="zoom:60%;">
 
 
 
 <ul>
 <li><strong>2. 应用外包研发</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102234945331.png" alt="image-20230102234945331" style="zoom:85%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102234945331.png" alt="image-20230102234945331" style="zoom:85%;">
 
 
 
 <ul>
 <li><strong>3. 应用分发</strong></li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/Note/Typora%20%E5%9B%BE%E5%83%8F/image-20230102235030898.png" alt="image-20230102235030898" style="zoom:80%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230102235030898.png" alt="image-20230102235030898" style="zoom:80%;">
 
 
 
@@ -6364,18 +6225,18 @@
 
 
 
-<h4 id="云直播主要功能"><a href="#云直播主要功能" class="headerlink" title="云直播主要功能"></a>云直播主要功能</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001437658.png" alt="image-20230103001437658" style="zoom: 67%;">
+<h4 id="云直播主要功能"><a href="#云直播主要功能" class="headerlink" title="云直播主要功能"></a>云直播主要功能</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001437658.png" alt="image-20230103001437658" style="zoom: 50%;">
 
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001454010.png" alt="image-20230103001454010" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001454010.png" alt="image-20230103001454010" style="zoom: 50%;">
 
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001505846.png" alt="image-20230103001505846" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001505846.png" alt="image-20230103001505846" style="zoom: 50%;">
 
 
 
 <h4 id="云直播应用场景"><a href="#云直播应用场景" class="headerlink" title="云直播应用场景"></a>云直播应用场景</h4><ul>
 <li>业务特点：要求进行视频的实时录制播放，及时分发到大量用户。</li>
 </ul>
-<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001531680.png" alt="image-20230103001531680" style="zoom:67%;">
+<img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103001531680.png" alt="image-20230103001531680" style="zoom: 60%;">
 
 
 
@@ -6715,7 +6576,7 @@
 
 
 
-<h4 id="云通信应用场景"><a href="#云通信应用场景" class="headerlink" title="云通信应用场景"></a>云通信应用场景</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103003821752.png" alt="image-20230103003821752" style="zoom:67%;">
+<h4 id="云通信应用场景"><a href="#云通信应用场景" class="headerlink" title="云通信应用场景"></a>云通信应用场景</h4><img src="/2023/01/01/Tencent%20Cloud%20Practitioner/image-20230103003821752.png" alt="image-20230103003821752" style="zoom:60%;">
 
 
 
@@ -6820,79 +6681,229 @@
       </tags>
   </entry>
   <entry>
-    <title>云AI平台实战</title>
-    <url>/2022/07/07/Cloud%20AI/</url>
-    <content><![CDATA[<h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
-<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
-<p><strong>配置 YUM 源</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
+    <title>Zabbix 监控</title>
+    <url>/2022/11/11/zabbix/</url>
+    <content><![CDATA[<p>今天来部署 Zabbix 来监控我的服务器；</p>
+<blockquote>
+<p>Zabbix 官网手册：<a href="https://www.zabbix.com/cn/manuals">https://www.zabbix.com/cn/manuals</a> ；其中 LTS（Long Term Support）是长期支持版本。</p>
+<p>我们的服务器环境依旧是 <strong>CentOS Stream 8</strong>，安装 Zabbix 的版本是 <strong>4.0 LTS</strong></p>
+</blockquote>
+<h2 id="安装-zabbix-4-0-版本"><a href="#安装-zabbix-4-0-版本" class="headerlink" title="安装 zabbix 4.0 版本"></a>安装 zabbix 4.0 版本</h2><h3 id="服务端部署流程"><a href="#服务端部署流程" class="headerlink" title="服务端部署流程"></a>服务端部署流程</h3><span id="more"></span>
 
-<span id="more"></span>
-
-
-
-<p><strong>安装软件包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.安装zabbix.repo仓库文件,清华源的zabbix4版本(如果是其它操作系统,则选择对应版本的rpm包)</span><br><span class="line">[root@stream8 ~]<span class="comment"># rpm -ivh https://mirrors.tuna.tsinghua.edu.cn/zabbix/zabbix/4.0/rhel/8/x86_64/zabbix-release-4.0-2.el8.noarch.rpm</span></span><br><span class="line"></span><br><span class="line">此时,yum仓库会多一个zabbix.repo文件</span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/yum.repos.d/zabbix.repo </span></span><br><span class="line">[zabbix]</span><br><span class="line">name=Zabbix Official Repository - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/zabbix/4.0/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591</span><br><span class="line"></span><br><span class="line">[zabbix-non-supported]</span><br><span class="line">name=Zabbix Official Repository non-supported - <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://repo.zabbix.com/non-supported/rhel/8/<span class="variable">$basearch</span>/</span><br><span class="line">enabled=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX</span><br><span class="line">gpgcheck=1</span><br><span class="line"></span><br><span class="line">替换zabbix的来源路径为清华的源(因为zabbix官网的服务器在国外)</span><br><span class="line">[root@stream8 ~]<span class="comment"># sed -i &#x27;s#repo.zabbix.com#mirrors.tuna.tsinghua.edu.cn/zabbix#g&#x27; /etc/yum.repos.d/zabbix.repo</span></span><br><span class="line"></span><br><span class="line">2.安装zabbix服务端(前端)、zabbix连接数据库、zabbix-agent(客户端)</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-agent mariadb-server</span></span><br><span class="line"><span class="comment"># zabbix 4.0默认是lamp,所以这一步会自动安装httpd,在5.0版本则不会安装httpd</span></span><br><span class="line"></span><br><span class="line">启动mariadb数据库,设置开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start mariadb &amp; systemctl enable mariadb</span></span><br><span class="line"></span><br><span class="line">3.设置mariadb数据库密码(默认账号是root),创建zabbix库(设置字符集是utf8),存储监控数据,且创建账号</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysqladmin password redhat	</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;create database zabbix character set utf8 collate utf8_bin;&quot;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;grant all privileges on zabbix.* to zabbix@localhost identified by &#x27;redhat&#x27;;&quot;</span></span><br><span class="line"></span><br><span class="line">测试zabbix用户</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show databases;&quot;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| zabbix             |</span><br><span class="line">+--------------------+</span><br><span class="line"></span><br><span class="line">4.导入zabbix的数据库</span><br><span class="line">这里因为Stream8版本原因,zcat读取create.sql.gz会报错<span class="string">&quot;导入的数据行太长了&quot;</span>,修改一下mysql的配置文件并重启服务即可解决;</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/my.cnf</span></span><br><span class="line">...添加下几行</span><br><span class="line">[mysqld]</span><br><span class="line">innodb_strict_mode = 0</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart mariadb</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在CentOS 7版本则不会出现以上问题</span></span><br><span class="line"><span class="comment"># 用zcat直接读取gz压缩包,管道符交给mysql命令导入数据,往zabbix库中导入数据</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uroot -predhat zabbix</span></span><br><span class="line"></span><br><span class="line">查看导入zabbix数据库的表;</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat -e &quot;show tables from zabbix;&quot;</span></span><br><span class="line">...</span><br><span class="line">| <span class="built_in">users</span>                      |</span><br><span class="line">| users_groups               |</span><br><span class="line">| usrgrp                     |</span><br><span class="line">| valuemaps                  |</span><br><span class="line">| widget                     |</span><br><span class="line">| widget_field               |</span><br><span class="line">+----------------------------+</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">5. 编辑zabbix-server服务端配置文件(修改数据库部分即可)	</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># DBHost=localhost			数据库主机,默认未开启</span></span><br><span class="line">DBHost=localhost			启动,指定为本机</span><br><span class="line"></span><br><span class="line"><span class="comment"># DBPassword=				数据库密码,默认未开启</span></span><br><span class="line">DBPassword=redhat			开启,设置zabbix数据库密码</span><br><span class="line"></span><br><span class="line">修改完,也可以直接替换源文件为以下有效的内容,直观明了</span><br><span class="line">[root@stream8 ~]<span class="comment"># grep &quot;^[a-Z]&quot; /etc/zabbix/zabbix_server.conf</span></span><br><span class="line">LogFile=/var/log/zabbix/zabbix_server.log</span><br><span class="line">LogFileSize=0</span><br><span class="line">PidFile=/var/run/zabbix/zabbix_server.pid</span><br><span class="line">SocketDir=/var/run/zabbix</span><br><span class="line">DBHost=localhost		<span class="comment"># 指定mysql的地址</span></span><br><span class="line">DBName=zabbix			<span class="comment"># 数据库名字</span></span><br><span class="line">DBUser=zabbix			<span class="comment"># 数据库的连接用户</span></span><br><span class="line">DBPassword=redhat		<span class="comment"># 数据库密码</span></span><br><span class="line">SNMPTrapperFile=/var/log/snmptrap/snmptrap.log		<span class="comment"># 存放自定义监控项的目录</span></span><br><span class="line">Timeout=4</span><br><span class="line">AlertScriptsPath=/usr/lib/zabbix/alertscripts</span><br><span class="line">ExternalScripts=/usr/lib/zabbix/externalscripts</span><br><span class="line">LogSlowQueries=3000</span><br><span class="line"></span><br><span class="line">6.启动zabbix服务,且开机自启</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start zabbix-server &amp; systemctl enable zabbix-server</span></span><br><span class="line"></span><br><span class="line">7.检查zabbix(zabbix服务端的端口<span class="string">&#x27;10051&#x27;</span>)</span><br><span class="line">[root@stream8 ~]<span class="comment"># netstat -nltp</span></span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1131/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:10051           0.0.0.0:*               LISTEN      13601/zabbix_server </span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN      9999/mysqld         </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      1131/sshd           </span><br><span class="line">tcp6       0      0 :::10051                :::*                    LISTEN      13601/zabbix_server </span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>配置 pip</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>至此，zabbix-server 服务端核心程序就装好了，以及 zabbix-UI 这个php程序也装好了；</p>
+<p>还需配置 web 前端，默认 zabbix 4.0 版本只支持 apache，不同 zabbix 版本 web 前端代理不一样（nginx、apache）</p>
+</blockquote>
+<p><strong>Apache 配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.修改PHP时区</span><br><span class="line">[root@stream8 ~]<span class="comment"># vim /etc/php.ini </span></span><br><span class="line">...</span><br><span class="line">;date.timezone =				<span class="comment"># 找到时区这一行(默认是未开启的)</span></span><br><span class="line">date.timezone = Asia/Shanghai	<span class="comment"># 设置为亚洲/上海	</span></span><br><span class="line"></span><br><span class="line">如果后续手动修改了时区,需要重启php的服务</span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl restart php-fpm</span></span><br><span class="line"></span><br><span class="line">2.重启apache服务</span><br><span class="line"><span class="comment"># 查看apache子目录zabbix的配置</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cat /etc/httpd/conf.d/zabbix.conf </span></span><br><span class="line">...</span><br><span class="line">Alias /zabbix /usr/share/zabbix	 	可以看到访问/zabbix,会转发到/usr/share/zabbix目录</span><br><span class="line"></span><br><span class="line">&lt;Directory <span class="string">&quot;/usr/share/zabbix&quot;</span>&gt;</span><br><span class="line">    Options FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line"></span><br><span class="line">    &lt;FilesMatch \.(php|phar)$&gt;</span><br><span class="line">        SetHandler <span class="string">&quot;proxy:unix:/run/php-fpm/zabbix.sock|fcgi://localhost&quot;</span></span><br><span class="line">    &lt;/FilesMatch&gt;</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># systemctl start httpd &amp; systemctl enable httpd</span></span><br></pre></td></tr></table></figure>
 
 
 
-<p><strong>安装 zbar、pyzbar、pillow</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+<p><strong>访问服务器的<code>IP</code>加<code>/zabbix</code></strong></p>
+<img src="/2022/11/11/zabbix/image-20221111230949455.png" alt="image-20221111230949455" style="zoom:150%;">
 
 
 
-<p><strong>编写微信名片图像解码程序</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+<img src="/2022/11/11/zabbix/image-20221111231310604.png" alt="image-20221111231310604" style="zoom:150%;">
 
 
 
-<p><strong>编写微信代码</strong></p>
-<p>动态图片背景<strong>（gif）</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+<img src="/2022/11/11/zabbix/image-20221111231714873.png" alt="image-20221111231714873" style="zoom:150%;">
 
 
 
-<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
-<p><strong>安装环境</strong></p>
-<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
-<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
+<img src="/2022/11/11/zabbix/image-20221111231948330.png" alt="image-20221111231948330" style="zoom:150%;">
 
 
 
-<p><strong>以下命令在cmd操作</strong>        👇</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
-
-<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
-
-
-
-<p><strong>安装人脸检测相关的包</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/11/11/zabbix/image-20221111232031222.png" alt="image-20221111232031222"></p>
+<p><img src="/2022/11/11/zabbix/image-20221111232105026.png" alt="image-20221111232105026"></p>
+<img src="/2022/11/11/zabbix/image-20221111232259952.png" alt="image-20221111232259952" style="zoom:150%;">
 
 
 
-<p><strong>编写人脸识别特征程序</strong></p>
-<p><code>写一个face_1.py文件,内容如下    👇</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>后面会教大家，如何在后端修改 Zabbix 的 Admin 用户的密码</p>
+</blockquote>
+<img src="/2022/11/11/zabbix/image-20221111232456595.png" alt="image-20221111232456595" style="zoom:150%;">
 
-<p>运行程序即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
 
-<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+<img src="/2022/11/11/zabbix/image-20221111232832617.png" alt="image-20221111232832617" style="zoom:150%;">
+
+
+
+<blockquote>
+<p>如果 web 界面不能选择使用中文，则需要手动安装中文语言包</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">安装zh_CN语言包</span><br><span class="line">[root@stream8 ~]<span class="comment"># dnf install langpacks-zh_CN.noarch -y</span></span><br><span class="line"></span><br><span class="line">然后刷新web界面,就能选择中文了</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修改图形的数据展示（默认字体有问题）</strong></p>
+<img src="/2022/11/11/zabbix/image-20221111234231331.png" alt="image-20221111234231331" style="zoom:150%;">
+
+
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">下载字体,修改zabbix的字体支持(因为缺少zabbix所需的字体)</span><br><span class="line"><span class="comment"># 文泉仪微字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># yum install wqy-microhei-fonts -y</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 拷贝下载的字体覆盖zabbix的图形字体</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># cp /usr/share/fonts/wqy-microhei/wqy-microhei.ttc /usr/share/zabbix/assets/fonts/graphfont.ttf </span></span><br><span class="line"><span class="built_in">cp</span>: overwrite <span class="string">&#x27;/usr/share/zabbix/assets/fonts/graphfont.ttf&#x27;</span>? y</span><br></pre></td></tr></table></figure>
+
+
+
+<p>刷新 web 界面，可以看到乱码的中文字体生效了</p>
+<img src="/2022/11/11/zabbix/image-20221111234958289.png" alt="image-20221111234958289" style="zoom:150%;">
+
+
+
+<h3 id="修改-Zabbix-默认-Admin-用户的密码"><a href="#修改-Zabbix-默认-Admin-用户的密码" class="headerlink" title="修改 Zabbix 默认 Admin 用户的密码"></a>修改 Zabbix 默认 Admin 用户的密码</h3><blockquote>
+<p>zabbix部署后，使用默认的 Admin 账户登录，密码默认是 zabbix；</p>
+</blockquote>
+<p><strong>数据库重置 zabbix web用户</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">首先,进入zabbix数据库,查看当前<span class="built_in">users</span>表的信息</span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat </span></span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection <span class="built_in">id</span> is 385</span><br><span class="line">Server version: 10.3.28-MariaDB MariaDB Server</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.</span><br><span class="line"></span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line">Reading table information <span class="keyword">for</span> completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">MariaDB [zabbix]&gt; select * from <span class="built_in">users</span>;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 5fce1b3e34b520afeffb37ce08c7cd66 |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以看到用户表中的用户Admin的密码是通过MD5加密的</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><a href="https://www.cmd5.com/">【MD5 在线加密及解密】</a></p>
+<p>通过 MD5 反解 Admin 用户的数据库密码</p>
+<p><img src="/2022/11/11/zabbix/image-20221112000032655.png" alt="image-20221112000032655"></p>
+<blockquote>
+<p>这里学习一下在 Linux 中生成 MD5 值</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 可以使用命令生成md5值(如下,生成明文genmd5的md5值)</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n genmd5 | openssl md5</span></span><br><span class="line">(stdin)= caf22338e37c42b2f2e9358ba6bedb04</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>手动更新 zabbix Admin 用户的密码</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">设置md5的密码为<span class="string">&#x27;Aa123!&#x27;</span></span><br><span class="line">[root@stream8 ~]<span class="comment"># echo -n Aa123! | openssl md5</span></span><br><span class="line">(stdin)= 675278e2a74b19cfa0a5f766424c67cc</span><br><span class="line"></span><br><span class="line">[root@stream8 ~]<span class="comment"># mysql -uroot -predhat</span></span><br><span class="line">MariaDB [(none)]&gt; use zabbix;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新zabbix web用户登录密码</span></span><br><span class="line">MariaDB [zabbix]&gt; update <span class="built_in">users</span> <span class="built_in">set</span> passwd=<span class="string">&#x27;675278e2a74b19cfa0a5f766424c67cc&#x27;</span> <span class="built_in">where</span> userid = <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">Query OK, 1 row affected (0.003 sec)</span><br><span class="line">Rows matched: 1  Changed: 1  Warnings: 0</span><br><span class="line"></span><br><span class="line">MariaDB [zabbix]&gt; select * from <span class="built_in">users</span>;</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">| userid | <span class="built_in">alias</span> | name   | surname       | passwd                           | url | autologin | autologout | lang  | refresh | <span class="built_in">type</span> | theme   | attempt_failed | attempt_ip    | attempt_clock | rows_per_page |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">|      1 | Admin | Zabbix | Administrator | 675278e2a74b19cfa0a5f766424c67cc |     |         1 | 0          | zh_CN | 30s     |    3 | default |              0 | 27.38.213.189 |    1668181951 |            50 |</span><br><span class="line">|      2 | guest |        |               | d41d8cd98f00b204e9800998ecf8427e |     |         0 | 15m        | en_GB | 30s     |    1 | default |              0 |               |             0 |            50 |</span><br><span class="line">+--------+-------+--------+---------------+----------------------------------+-----+-----------+------------+-------+---------+------+---------+----------------+---------------+---------------+---------------+</span><br><span class="line">2 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line"><span class="comment"># </span></span><br><span class="line">MariaDB [zabbix]&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 0 rows affected (0.000 sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>登录测试 ！</strong></p>
+<img src="/2022/11/11/zabbix/image-20221112001106389.png" alt="image-20221112001106389" style="zoom:200%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221112001119489.png" alt="image-20221112001119489" style="zoom:150%;">
+
+
+
+<h2 id="安装-zabbix-5-0-版本"><a href="#安装-zabbix-5-0-版本" class="headerlink" title="安装 zabbix 5.0 版本"></a>安装 zabbix 5.0 版本</h2><p>5.0 版本对基础环境的要求有很大的变化，最大的就是对 php 版本的要求，最低要求 7.2.0 版本，对 php 扩展组件也有要求；</p>
+<p>详见官网：<a href="https://www.zabbix.com/documentation/5.0/zh/manual/installation/requirements">https://www.zabbix.com/documentation/5.0/zh/manual/installation/requirements</a></p>
+<p><strong>环境介绍</strong></p>
+<p>1 台 server，2 台 agent，系统是 CentOS Stream 8</p>
+<p><strong>server：</strong> 10.0.0.10/24</p>
+<p><strong>agent1：</strong>10.0.0.11/24</p>
+<p><strong>agent2：</strong>10.0.0.12/24</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.环境准备</span><br><span class="line">关闭防火墙(三台机器)</span><br><span class="line">[root@server ~]<span class="comment"># sed -i &#x27;s/SELINUX=enforcing/SELINUX=disabled/&#x27; /etc/selinux/config</span></span><br><span class="line">[root@server ~]<span class="comment"># systemctl disable --now firewalld</span></span><br><span class="line"></span><br><span class="line">此时获取当前selinux防火墙的安全策略仍为Enforcing,配置文件并未生效</span><br><span class="line">[root@server ~]<span class="comment"># reboot</span></span><br><span class="line"></span><br><span class="line">获取zabbix的下载源</span><br><span class="line">[root@server ~]<span class="comment"># rpm -Uvh https://mirrors.aliyun.com/zabbix/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm</span></span><br><span class="line"></span><br><span class="line">更换zabbix.repo源</span><br><span class="line">[root@server ~]<span class="comment"># sed -i &#x27;s#http://repo.zabbix.com#https://mirrors.aliyun.com/zabbix#&#x27; /etc/yum.repos.d/zabbix.repo</span></span><br><span class="line"></span><br><span class="line">2.安装zabbix server和agent</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install zabbix-server-mysql zabbix-agent</span></span><br><span class="line"></span><br><span class="line">3.安装zabbix前端环境</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install zabbix-web-mysql zabbix-apache-conf</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<blockquote>
+<p>如果是 CentOS 7 版本，则需要安装 Software Collections，便于后续安装高版本的 php，默认 yum 安装的 php 版本为 5.4 过低。SCL（Software Collections）可以让你在同一个操作系统上安装和使用多个版本的软件，而不会影响整个系统的软件包。</p>
+<p>为了避免系统广泛冲突，包安装在 /opt/rh 目录中，例如，这允许你在 CentOS 7 机器上安装 Python3.5，而不会删除或干扰 Python 2.7.</p>
+<p><code>yum -y install centos-release-scl</code></p>
+<p><strong>这就是 zabbix 5.0 和 4.0 的区别之一，不过因为我们的系统是 CentOS Steam 8，直接安装 php 刚好就是 7.2 版本，所以不存在这个问题🤣</strong></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">4.安裝zabbix所需的数据库</span><br><span class="line">[root@server ~]<span class="comment"># dnf -y install mariadb-server</span></span><br><span class="line"></span><br><span class="line">5.配置数据库</span><br><span class="line">[root@server ~]<span class="comment"># systemctl enable --now mariadb</span></span><br><span class="line"></span><br><span class="line">初始化数据库,设置密码</span><br><span class="line">[root@server ~]<span class="comment"># mysql_secure_installation </span></span><br><span class="line">...</span><br><span class="line">Enter current password <span class="keyword">for</span> root (enter <span class="keyword">for</span> none): 【回车,默认是空】</span><br><span class="line">OK, successfully used password, moving on...</span><br><span class="line"></span><br><span class="line">Set root password? [Y/n] y	【设置root密码】</span><br><span class="line">New password:  			【redhat】</span><br><span class="line">Re-enter new password: 		【redhat】</span><br><span class="line">Password updated successfully!</span><br><span class="line"></span><br><span class="line">Remove anonymous <span class="built_in">users</span>? [Y/n] y			【Y,移除匿名用户】</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? [Y/n] n		【n,不禁止root远程登录】</span><br><span class="line"> ... skipping.</span><br><span class="line"></span><br><span class="line">Remove <span class="built_in">test</span> database and access to it? [Y/n] y	【Y,删除<span class="built_in">test</span>数据库】</span><br><span class="line"> - Dropping <span class="built_in">test</span> database...</span><br><span class="line"> ... Success!</span><br><span class="line"> - Removing privileges on <span class="built_in">test</span> database...</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? [Y/n] y		【Y,确认刷新授权表】</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">登录数据库</span><br><span class="line">[root@server ~]<span class="comment"># mysql -uroot -predhat</span></span><br><span class="line"></span><br><span class="line">创建zabbix数据库</span><br><span class="line">MariaDB [(none)]&gt; create database zabbix character <span class="built_in">set</span> utf8 collate utf8_bin;</span><br><span class="line">Query OK, 1 row affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">添加数据库用户,以及zabbix所需的数据库信息</span><br><span class="line">MariaDB [(none)]&gt; create user zabbix@localhost identified by <span class="string">&quot;redhat&quot;</span>;</span><br><span class="line">Query OK, 0 rows affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; grant all privileges on zabbix.* to zabbix@localhost;</span><br><span class="line">Query OK, 0 rows affected (0.001 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; flush privileges;</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; <span class="built_in">exit</span></span><br><span class="line">Bye</span><br><span class="line"></span><br><span class="line">6.使用zabbix-mysql命令,导入数据库信息</span><br><span class="line">[root@server ~]<span class="comment"># zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uzabbix -predhat zabbix</span></span><br><span class="line"></span><br><span class="line">[root@server ~]<span class="comment"># mysql -uroot -predhat -e &quot;show tables from zabbix;&quot;</span></span><br><span class="line">| <span class="built_in">users</span>                      |</span><br><span class="line">| users_groups               |</span><br><span class="line">| usrgrp                     |</span><br><span class="line">| valuemaps                  |</span><br><span class="line">| widget                     |</span><br><span class="line">| widget_field               |</span><br><span class="line">+----------------------------+</span><br><span class="line"></span><br><span class="line">7.修改zabbix server配置文件,修改数据库密码</span><br><span class="line">[root@server ~]<span class="comment"># vim /etc/zabbix/zabbix_server.conf </span></span><br><span class="line">...</span><br><span class="line"><span class="comment"># DBPassword=</span></span><br><span class="line">DBPassword=redhat					<span class="comment"># 指定数据库密码</span></span><br><span class="line"></span><br><span class="line">8.修改zabbix的php配置文件</span><br><span class="line">[root@server ~]<span class="comment"># vim /etc/php-fpm.d/zabbix.conf </span></span><br><span class="line">; php_value[date.timezone] = Europe/Riga		<span class="comment"># 默认是注释的&quot;;&quot;</span></span><br><span class="line">php_value[date.timezone] = Asia/Shanghai		<span class="comment"># 将时区改成亚洲/上海</span></span><br><span class="line"></span><br><span class="line">9.启动zabbix服务</span><br><span class="line"><span class="comment"># zabbix前端请求是交给php解析</span></span><br><span class="line">[root@server ~]<span class="comment"># ls /etc/systemd/system | grep php</span></span><br><span class="line">php-fpm.service.d</span><br><span class="line">[root@server ~]<span class="comment"># systemctl start zabbix-server zabbix-agent httpd php-fpm </span></span><br><span class="line">[root@server ~]<span class="comment"># systemctl enable zabbix-server zabbix-agent httpd php-fpm</span></span><br><span class="line"></span><br><span class="line">10.访问zabbix界面,和4.0一致,IP + /zabbix</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/11/zabbix/image-20221114141325025.png" alt="image-20221114141325025" style="zoom:150%;">
+
+
+
+<p>后续步骤参考 zabbix4.0</p>
+<img src="/2022/11/11/zabbix/image-20221114141628067.png" alt="image-20221114141628067" style="zoom:150%;">
+
+
+
+<img src="/2022/11/11/zabbix/image-20221114141857519.png" alt="image-20221114141857519" style="zoom: 200%;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ]]></content>
       <categories>
-        <category>人工智能</category>
+        <category>监控</category>
       </categories>
       <tags>
-        <tag>Python</tag>
+        <tag>Zabbix</tag>
       </tags>
   </entry>
 </search>
