@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://imlai.club/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://imlai.club/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"laijune.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="制作微信名片 初始环境，配置网络，能 PING 通外网 配置 YUM 源 12345678910[root@localhost ~]# mkdir &#x2F;dvd[root@localhost ~]# mount &#x2F;dev&#x2F;sr0 &#x2F;dvd&#x2F;[root@localhost ~]# vim &#x2F;etc&#x2F;yum.repos.d&#x2F;local.repo[local]name &#x3D; This is local rep">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云AI平台实战">
+<meta property="og:url" content="https://laijune.github.io/2022/07/07/Cloud%20AI/index.html">
+<meta property="og:site_name" content="Xiaolai Blog">
+<meta property="og:description" content="制作微信名片 初始环境，配置网络，能 PING 通外网 配置 YUM 源 12345678910[root@localhost ~]# mkdir &#x2F;dvd[root@localhost ~]# mount &#x2F;dev&#x2F;sr0 &#x2F;dvd&#x2F;[root@localhost ~]# vim &#x2F;etc&#x2F;yum.repos.d&#x2F;local.repo[local]name &#x3D; This is local rep">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://laijune.github.io/2022/07/07/Cloud%20AI/image-20220711220012434.png">
+<meta property="og:image" content="https://laijune.github.io/2022/07/07/Cloud%20AI/2.png">
+<meta property="og:image" content="https://laijune.github.io/2022/07/07/Cloud%20AI/1.png">
+<meta property="article:published_time" content="2022-07-07T12:00:02.000Z">
+<meta property="article:modified_time" content="2023-01-03T14:47:23.278Z">
+<meta property="article:author" content="imlai">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://laijune.github.io/2022/07/07/Cloud%20AI/image-20220711220012434.png">
+
+
+<link rel="canonical" href="https://laijune.github.io/2022/07/07/Cloud%20AI/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://laijune.github.io/2022/07/07/Cloud%20AI/","path":"2022/07/07/Cloud AI/","title":"云AI平台实战"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>云AI平台实战 | Xiaolai Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Xiaolai Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaolai Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B6%E4%BD%9C%E5%BE%AE%E4%BF%A1%E5%90%8D%E7%89%87"><span class="nav-number">1.</span> <span class="nav-text">制作微信名片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E4%BA%BA%E8%84%B8%E7%89%B9%E5%BE%81"><span class="nav-number">2.</span> <span class="nav-text">标识人脸特征</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="imlai"
+      src="/images/zhang.jpg">
+  <p class="site-author-name" itemprop="name">imlai</p>
+  <div class="site-description" itemprop="description">I can do all things</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  
+
+<div class="">
+  <div class="">
+      <a target="_blank" class="social-link" href="/atom.xml">
+      <div id="xxxx" class="social-item" style="width:100px;margin: 0 auto;margin-top: 10px;border:solid;padding-top:10;border-color:#fc6423;color:#fc6423;border-radius:11px;">
+          
+            <span class="icon" id="iconX" style="color:#fc6423;">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label" id="spanX" style="color:#fc6423;">RSS</span>
+      </div>
+      </a>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var div = document.getElementById('xxxx')
+  div.onmouseover = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#FC6423";
+    iconX.style.color = "white"    
+    spanX.style.color = "white"
+  }
+  div.onmouseout = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#222222";
+    iconX.style.color = "#fc6423"    
+    spanX.style.color = "#fc6423"
+  }
+
+</script>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/laijune" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;laijune" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:laijunyan.ss@outlook.com" title="Outlook-Mail → mailto:laijunyan.ss@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Outlook-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaopan233.club/" title="https:&#x2F;&#x2F;xiaopan233.club&#x2F;" rel="noopener" target="_blank">Xiaopan233 Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.petitstart.club/" title="https:&#x2F;&#x2F;www.petitstart.club&#x2F;" rel="noopener" target="_blank">Petitstart'Blog</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://laijune.github.io/2022/07/07/Cloud%20AI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zhang.jpg">
+      <meta itemprop="name" content="imlai">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaolai Blog">
+      <meta itemprop="description" content="I can do all things">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="云AI平台实战 | Xiaolai Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云AI平台实战
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-07-07 20:00:02" itemprop="dateCreated datePublished" datetime="2022-07-07T20:00:02+08:00">2022-07-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-01-03 22:47:23" itemprop="dateModified" datetime="2023-01-03T22:47:23+08:00">2023-01-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" itemprop="url" rel="index"><span itemprop="name">人工智能</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>696</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>3 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="制作微信名片"><a href="#制作微信名片" class="headerlink" title="制作微信名片"></a>制作微信名片</h3><hr>
+<p><strong>初始环境，配置网络，能 PING 通外网</strong></p>
+<p><strong>配置 YUM 源</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir /dvd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># mount /dev/sr0 /dvd/</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/yum.repos.d/local.repo</span></span><br><span class="line">[<span class="built_in">local</span>]</span><br><span class="line">name = This is <span class="built_in">local</span> repo</span><br><span class="line">baseurl = file:///dvd</span><br><span class="line">enabled = 1</span><br><span class="line">gpgcheck = 0</span><br><span class="line">[root@localhost ~]<span class="comment"># yum clean all</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum repolist</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+
+
+<p><strong>安装软件包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># yum -y install epel-release</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36 python36u-pip python36u-redis python36-numpy</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install python36-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zlib-devel</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install libjpeg-turbo-devel</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>配置 pip</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mkdir .pip</span></span><br><span class="line">[root@localhost ~]<span class="comment"># cd .pip/</span></span><br><span class="line">[root@localhost .pip]<span class="comment"># vim pip.conf</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line">安装gcc,以免安装MyQR报错</span><br><span class="line">[root@localhost .pip]<span class="comment"># yum -y install gcc* </span></span><br><span class="line">安装MyQR</span><br><span class="line">[root@localhost .pip]<span class="comment"># pip3 install MyQR</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>安装 zbar、pyzbar、pillow</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .pip]<span class="comment"># cd</span></span><br><span class="line">[root@localhost ~]<span class="comment"># yum -y install zbar</span></span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install pyzbar pillow</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信名片图像解码程序</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾</span><br><span class="line">[root@localhost ~]<span class="comment"># vim decode.py</span></span><br><span class="line">from pyzbar.pyzbar import decode</span><br><span class="line">from PIL import Image</span><br><span class="line"></span><br><span class="line">image=<span class="string">&quot;wx.jpg&quot;</span>										<span class="comment"># 这里图片路径在当前目录 /root/ 目录下,注意文件名和格式要一致;物理机的话建议scp</span></span><br><span class="line">img = Image.open(image)</span><br><span class="line">barcodes = decode(img)</span><br><span class="line"><span class="keyword">for</span> barcode <span class="keyword">in</span> barcodes:</span><br><span class="line">        url = barcode.data.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(url)</span><br><span class="line">        </span><br><span class="line">[root@localhost ~]<span class="comment"># python3 decode.py </span></span><br><span class="line">https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M        <span class="comment"># 获得输出链接,复制</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写微信代码</strong></p>
+<p>动态图片背景<strong>（gif）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;文件名&#x27;</span>无所谓,以.py结尾					</span><br><span class="line"><span class="comment"># 原图片路径(picture)在/root/Desktop/222.gif</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim myqr_wx2.py</span></span><br><span class="line">from MyQR import myqr</span><br><span class="line">myqr.run(words=<span class="string">&quot;https://u.wechat.com/MFSMySpvW2Ec2mJUjK7cn0M&quot;</span>,version=3,picture=<span class="string">&quot;/root/Desktop/222.gif&quot;</span>,colorized=True,</span><br><span class="line">        save_name=<span class="string">&quot;233.gif&quot;</span>,			注意这里的后缀只能是<span class="string">&#x27;.jpg&#x27;</span>, <span class="string">&#x27;.png&#x27;</span>, <span class="string">&#x27;.bmp&#x27;</span>, <span class="string">&#x27;.gif&#x27;</span>,建议<span class="string">&#x27;.gif&#x27;</span></span><br><span class="line">        save_dir=<span class="string">&quot;/root/Desktop&quot;</span>)		输出路径</span><br><span class="line"></span><br><span class="line">这里直接执行py文件可能由于numpy版本过高报错,需要安装低版本</span><br><span class="line">[root@localhost ~]<span class="comment"># pip3 install imageio==2.13.5</span></span><br><span class="line">再次执行py文件</span><br><span class="line">[root@localhost ~]<span class="comment"># python3 myqr_wx2.py</span></span><br><span class="line">line 16: mode: byte</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="标识人脸特征"><a href="#标识人脸特征" class="headerlink" title="标识人脸特征"></a>标识人脸特征</h3><hr>
+<p><strong>安装环境</strong></p>
+<p><code>在Python官网下载 python-3.6.6-amd64.exe,如果有其它版本记得先卸载</code></p>
+<img src="/2022/07/07/Cloud%20AI/image-20220711220012434.png" alt="image-20220711220012434" style="zoom:50%;">
+
+
+
+<p><strong>以下命令在cmd操作</strong>        👇</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">检验 python</span><br><span class="line">C:\Users\Lai&gt;python --version</span><br><span class="line">Python 3.6.6		👈 版本</span><br><span class="line"></span><br><span class="line">在当前目录新建pip文件夹,写一个<span class="string">&#x27;pip.ini&#x27;</span>文件</span><br><span class="line"><span class="comment"># 内容如下,注意扩展名是ini</span></span><br><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/2.png" alt="2" style="zoom: 67%;">
+
+
+
+<p><strong>安装人脸检测相关的包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">下载 Pillow</span><br><span class="line">C:\Users\Lai&gt;pip install Pillow==7.0.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"></span><br><span class="line">安装 CMake</span><br><span class="line">C:\Users\Lai&gt;pip install CMake</span><br><span class="line"></span><br><span class="line">安装 dlib</span><br><span class="line">C:\Users\Lai&gt;pip install dlib==19.8.1</span><br><span class="line"></span><br><span class="line">安装 face_recognition</span><br><span class="line">C:\Users\Lai&gt;pip install face_recognition</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编写人脸识别特征程序</strong></p>
+<p><code>写一个face_1.py文件,内容如下    👇</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import face_recognition</span><br><span class="line"></span><br><span class="line">from PIL import Image,ImageDraw</span><br><span class="line"></span><br><span class="line">image = face_recognition.load_image_file(<span class="string">&quot;G312xixi.jpg&quot;</span>)				</span><br><span class="line"></span><br><span class="line">face_landmarks_list = face_recognition.face_landmarks(image)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;I found &#123;&#125; face(s) in this photograph.&quot;</span>.format(len(face_landmarks_list)))</span><br><span class="line"></span><br><span class="line">pil_image = Image.fromarray(image)</span><br><span class="line">d = ImageDraw.Draw(pil_image)</span><br><span class="line">	</span><br><span class="line"><span class="keyword">for</span> face_landmarks <span class="keyword">in</span> face_landmarks_list:</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The &#123;&#125; in this face has the following points:&#123;&#125;&quot;</span>.format(facial_feature,face_landmarks[facial_feature]))</span><br><span class="line">	<span class="keyword">for</span> facial_feature <span class="keyword">in</span> face_landmarks.keys():</span><br><span class="line">		d.line(face_landmarks[facial_feature],width=5)</span><br><span class="line"></span><br><span class="line">pil_image.show()</span><br></pre></td></tr></table></figure>
+
+<p>运行程序即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Lai&gt;python face_1.py</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/07/07/Cloud%20AI/1.png" alt="image-20220711230350855" style="zoom: 80%;">
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/01/Cloud%20Container/" rel="prev" title="云容器平台实战">
+                  <i class="fa fa-chevron-left"></i> 云容器平台实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/14/Machine%20learning/" rel="next" title="机器学习">
+                  机器学习 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">imlai</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">81k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">4:56</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://imlai.club/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://imlai.club/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
