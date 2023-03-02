@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://imlai.club/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://imlai.club/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"laijune.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="制作 Windows 镜像材料准备正版微软镜像（Win10&#x2F;Win11） NTLite（定制母盘） VMware 虚拟机 iSO 格式的 PE 系统（FirPE） Easy Sysprep（简称ES）是IT天空出品的一款 Windows 操作系统封装部署辅助工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="制作 Windows 镜像">
+<meta property="og:url" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/index.html">
+<meta property="og:site_name" content="Xiaolai Blog">
+<meta property="og:description" content="制作 Windows 镜像材料准备正版微软镜像（Win10&#x2F;Win11） NTLite（定制母盘） VMware 虚拟机 iSO 格式的 PE 系统（FirPE） Easy Sysprep（简称ES）是IT天空出品的一款 Windows 操作系统封装部署辅助工具">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303013507035.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303023632463.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303015830891.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303020029976.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303020338130.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303020804409.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303024303938.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303025200749.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303025759844.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303030434992.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303030744874.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303031034311.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303031741138.png">
+<meta property="article:published_time" content="2023-03-02T19:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-02T19:50:26.633Z">
+<meta property="article:author" content="imlai">
+<meta property="article:tag" content="镜像">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/image-20230303013507035.png">
+
+
+<link rel="canonical" href="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/","path":"2023/03/03/Customize Windows images.assets/","title":"制作 Windows 镜像"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>制作 Windows 镜像 | Xiaolai Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Xiaolai Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaolai Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%B6%E4%BD%9C-Windows-%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">制作 Windows 镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%90%E6%96%99%E5%87%86%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">材料准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E6%AF%8D%E7%9B%98"><span class="nav-number">1.2.</span> <span class="nav-text">定制母盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%A3%81%E7%9B%98"><span class="nav-number">1.3.</span> <span class="nav-text">新建虚拟磁盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.4.</span> <span class="nav-text">准备虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AF%8D%E7%9B%98"><span class="nav-number">1.5.</span> <span class="nav-text">安装母盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.6.</span> <span class="nav-text">自定义系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.7.</span> <span class="nav-text">封装系统</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="imlai"
+      src="/images/zhang.jpg">
+  <p class="site-author-name" itemprop="name">imlai</p>
+  <div class="site-description" itemprop="description">I can do all things</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  
+
+<div class="">
+  <div class="">
+      <a target="_blank" class="social-link" href="/atom.xml">
+      <div id="xxxx" class="social-item" style="width:100px;margin: 0 auto;margin-top: 10px;border:solid;padding-top:10;border-color:#fc6423;color:#fc6423;border-radius:11px;">
+          
+            <span class="icon" id="iconX" style="color:#fc6423;">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label" id="spanX" style="color:#fc6423;">RSS</span>
+      </div>
+      </a>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var div = document.getElementById('xxxx')
+  div.onmouseover = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#FC6423";
+    iconX.style.color = "white"    
+    spanX.style.color = "white"
+  }
+  div.onmouseout = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#222222";
+    iconX.style.color = "#fc6423"    
+    spanX.style.color = "#fc6423"
+  }
+
+</script>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/laijune" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;laijune" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:laijunyan.ss@outlook.com" title="Outlook-Mail → mailto:laijunyan.ss@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Outlook-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaopan233.club/" title="https:&#x2F;&#x2F;xiaopan233.club&#x2F;" rel="noopener" target="_blank">Xiaopan233 Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.petitstart.club/" title="https:&#x2F;&#x2F;www.petitstart.club&#x2F;" rel="noopener" target="_blank">Petitstart'Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://alberthua-perl.github.io/" title="https:&#x2F;&#x2F;alberthua-perl.github.io&#x2F;" rel="noopener" target="_blank">Alberthua Blog</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://laijune.github.io/2023/03/03/Customize%20Windows%20images.assets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zhang.jpg">
+      <meta itemprop="name" content="imlai">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaolai Blog">
+      <meta itemprop="description" content="I can do all things">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="制作 Windows 镜像 | Xiaolai Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          制作 Windows 镜像
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-03-03 03:00:00 / Modified: 03:50:26" itemprop="dateCreated datePublished" datetime="2023-03-03T03:00:00+08:00">2023-03-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Windows/" itemprop="url" rel="index"><span itemprop="name">Windows</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>7 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="制作-Windows-镜像"><a href="#制作-Windows-镜像" class="headerlink" title="制作 Windows 镜像"></a>制作 Windows 镜像</h1><h2 id="材料准备"><a href="#材料准备" class="headerlink" title="材料准备"></a>材料准备</h2><p><a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/software-download/windows10/">正版微软镜像（<code>Win10</code>/Win11）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ntlite.com/download/">NTLite（定制母盘）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VMware 虚拟机</a></p>
+<p><a target="_blank" rel="noopener" href="https://pan.yukaidi.com/s/EnGId?path=/">iSO 格式的 PE 系统（FirPE）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.itsk.com/thread-428084-1-1.html">Easy Sysprep</a>（简称ES）是<a target="_blank" rel="noopener" href="https://www.itsk.com/">IT天空</a>出品的一款 Windows 操作系统封装部署辅助工具</p>
+<span id="more"></span>
+
+<h2 id="定制母盘"><a href="#定制母盘" class="headerlink" title="定制母盘"></a>定制母盘</h2><ol>
+<li><p>准备好 WIN10/WIN11 镜像，单击进入，选择<code>sources</code>目录下的<code>install.wim</code>文件，复制到单独的文件夹；</p>
+</li>
+<li><p>安装 <a target="_blank" rel="noopener" href="https://www.ntlite.com/download/">NTLite</a> 并打开，如果提示注册，就选择<code>免费版</code>，单击<strong>左上角</strong>，<strong>添加</strong>——<strong>映像</strong>，选择刚刚复制出来的<code>install.wim</code>文件；</p>
+<p>在映像操作历史中，可以看到这个镜像包含的系统版本，<strong>双击</strong>你要定制的版本<strong>挂载镜像</strong>，等进度条跑完，就可以开始定制了。</p>
+<p>在<code>整合</code>里，可以为系统添加补丁包或是.NET的运行库，驱动程序和注册表同理；在<code>移除</code>里，可以对 Windows 自带的组件进行删减，例如要删除 Defender，取消勾选即可，如果要删除的组件是灰色，单击左上角的<code>兼容性</code>，把左侧所有选项前的勾去掉即可；在<code>配置</code>里，可以开启一些 Windows 功能，例如 SMB 服务，对系统选项进行设置，例如<code>关闭 Windows 更新</code>。</p>
+<p>在定制完所有东西之后，就可以点击最下方的<strong>应用</strong>了，在右侧可以看到我们所做的所有修改，左侧<strong>保存模式</strong>选择<code>保存映像并裁剪其他版本</code>，<strong>映像格式</strong>选择<code>标准-可编辑(WIM)</code>，点击左上角<strong>开始</strong>，我们的母盘（<code>install.wim</code>）便制作成功了。</p>
+</li>
+</ol>
+<h2 id="新建虚拟磁盘"><a href="#新建虚拟磁盘" class="headerlink" title="新建虚拟磁盘"></a>新建虚拟磁盘</h2><ol>
+<li>打开<code>计算机管理</code>——<code>磁盘管理</code>；</li>
+<li>选择一个盘，上方<strong>操作</strong>——<strong>创建 VHD</strong>，位置随便选一个，大小整个10GB，<strong>如果预装软件比较多可以设置得大一些</strong>；</li>
+</ol>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303013507035.png" alt="image-20230303013507035" style="zoom:80%;">
+
+
+
+<ol start="3">
+<li>初始化虚拟磁盘，在下方的未知磁盘上<strong>右键</strong>——<strong>初始化磁盘</strong>，选择 <strong>MBR</strong> 磁盘形式<strong>确定</strong>，之后在黑色的长条上<strong>右键</strong>——<strong>新建简单卷</strong>，一路<strong>下一步</strong>，磁盘便能创建成功了。</li>
+<li>返回此电脑，应该能够看到一个 10G 的空磁盘了（新加卷），母盘（<code>install.wim</code>）和解压出来的 <a target="_blank" rel="noopener" href="https://www.itsk.com/thread-428084-1-1.html">Easy Sysprep </a>这俩东西<strong>必须扔进虚拟磁盘</strong>，其他的例如<u>你需要预装进系统的软件</u>和垃圾清理软件（<a target="_blank" rel="noopener" href="https://www.ccleaner.com/zh-cn/ccleaner/download/standard">CCleaner</a>）都建议放进去。</li>
+</ol>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303023632463.png" alt="image-20230303023632463" style="zoom:95%;">
+
+
+
+<ol start="5">
+<li>然后返回磁盘管理，在虚拟磁盘上<strong>右键</strong>——<strong>分离VHD</strong></li>
+</ol>
+<h2 id="准备虚拟机"><a href="#准备虚拟机" class="headerlink" title="准备虚拟机"></a>准备虚拟机</h2><ol>
+<li>安装并打开 <a target="_blank" rel="noopener" href="https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html">VM虚拟机</a>，新建虚拟机（选择自定义），ISO 镜像选择 <a target="_blank" rel="noopener" href="https://pan.yukaidi.com/s/EnGId?path=/">FirPE 镜像</a>，下一步默认win10，固件类型传统 <strong>BIOS</strong>，虚拟机内存建议设置物理内存一半，网络类型（如果稍后自定义系统需要联网，则选择<code>NAT</code>，反之选择<code>不使用网络</code>），后续都默认<strong>下一步</strong>，磁盘大小 30G 差不多，自定义硬件里移除<code>USB控制器</code>、<code>声卡</code>和<code>打印机</code>；</li>
+<li>虚拟机创建成功后单击<strong>添加磁盘</strong>——选择<strong>使用现有虚拟磁盘</strong>——浏览（注意要把由下角文件改为所有文件，才能看到 vhd 格式的虚拟磁盘）——完成，保持现有格式，确定。</li>
+</ol>
+<h2 id="安装母盘"><a href="#安装母盘" class="headerlink" title="安装母盘"></a>安装母盘</h2><ol>
+<li>启动虚拟机，进入 FirPE，打开 DiskGenius，左上角选择 <strong>30G</strong> 的虚拟机的磁盘，上方<strong>快速分区</strong>，分区数量选<strong>自定义</strong>——一个分区，右侧文件系统随意，点击确定，虚拟机的磁盘就格式化成功了。</li>
+</ol>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303015830891.png" alt="image-20230303015830891" style="zoom: 80%;">
+
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303020029976.png" alt="image-20230303020029976" style="zoom:80%;">
+
+
+
+<ol start="2">
+<li>关闭 DiskGenius，打开桌面的<code>EasyRC 一键重装</code>，上方浏览选择你的母盘<code>install.wim</code>，在 10 GB 的 VHD 虚拟磁盘中；</li>
+</ol>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303020338130.png" alt="image-20230303020338130" style="zoom:80%;">
+
+
+
+<p>中间选择 <strong>30G</strong> 的虚拟机磁盘，<u>此处的盘符不一定是 C盘</u>，<strong>注意观察容量</strong>；</p>
+<p><strong>一键修复引导</strong>（全局引导修复勾上）勾上，下方的<strong>全自动安装系统</strong>一定要取消掉，点击<strong>开始安装</strong>，确认<strong>是</strong>，稍等完安装即可（等待进度条跑完，系统会自动重启并初始化）；</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303020804409.png" alt="image-20230303020804409" style="zoom:80%;">
+
+
+
+<ol start="3">
+<li>稍等片刻，来到以下的<strong>选择区域设置页面</strong>，在键盘上按<code>Ctrl+Shift+F3</code>，系统就会重启一次，然后进入审核模式桌面；</li>
+</ol>
+<h2 id="自定义系统"><a href="#自定义系统" class="headerlink" title="自定义系统"></a>自定义系统</h2><blockquote>
+<p>在这一步，就是对你的系统开始 DIY 并打包成一个镜像了</p>
+</blockquote>
+<p>现在你对系统做的所有修改，在稍后都会被封装进系统镜像中，你可以对系统做任意修改，但记住做完之后，一定要清理一下系统垃圾（<a target="_blank" rel="noopener" href="https://www.ccleaner.com/zh-cn/ccleaner/download/standard">CCleaner</a>），并把使用痕迹也清理一下。</p>
+<p>这里做的操作都应该在 <strong>C 盘</strong>上，而不是在<strong>简单卷</strong>，否则会不起作用，因为系统在装镜像的时候会将驱动器引导至 C 盘，我们一般就对<u>桌面</u>进行自定义如安装软件。</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303024303938.png" alt="image-20230303024303938" style="zoom:80%;">
+
+
+
+<h2 id="封装系统"><a href="#封装系统" class="headerlink" title="封装系统"></a>封装系统</h2><ol>
+<li><p>打开<code>Easy Sysprep</code>，点击<strong>设置</strong>，将左侧选项最下边的<strong>安全更新</strong>改为<strong>不安装</strong>，<strong>右侧的所有选项都打上勾</strong>，点击封装，确定，程序会在后台自动开始封装，封装完后右下角会提示封装已完成。</p>
+</li>
+<li><p>我们重启系统到 PE，注意此时一定要重启至 PE，回到 Windows 会封装失败；</p>
+<p>虚拟机重启 PE：</p>
+<p>① 重启后狂点<code>Esc、F2、Del</code>按键；</p>
+<p>② 或关机，单击<strong>打开电源时进入固件</strong> ↓，则会自动开机进入 BIOS。</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303025200749.png" alt="image-20230303025200749" style="zoom:90%;"></li>
+</ol>
+<ol start="3">
+<li><p>在 bios，将<code>CD-ROM</code>优先级调到第一（**+** 号），然后 <strong>F10</strong> 保存并退出，即可进入 PE 系统；</p>
+</li>
+<li><p>在 PE 里，打开<code>Easy Sysprep</code>，依然点击<strong>设置</strong> ↓</p>
+<p><strong><code>OEM</code></strong> 这一页，注册信息和 OEM 信息保持默认，其余选项看你的需求，可以改也可以不改；</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303025759844.png" alt="image-20230303025759844" style="zoom:80%;"></li>
+</ol>
+<p>​    **<code>优化</code>**这一页不动它，保持默认；</p>
+<p>​    <strong><code>部署</code><strong>这一页你可以设置一个计算机名，部署背景就是系统初始化时候的背景，插件默认，</strong>万能驱动关闭</strong>，<strong>首次    进桌面系统部署未完成前提示不要关闭计算机</strong>，这个选项如果你装系统后要后台自动安装软件，就把它打开，    此处我选择关闭；</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303030434992.png" alt="image-20230303030434992" style="zoom:75%;">
+
+<p>​    </p>
+<p>​    <strong><code>系统</code><strong>这一页，</strong>系统还原</strong>关闭，下边<strong>按照内置存储—&gt;外置存储的顺序理顺磁盘</strong>勾上，右侧<strong>转移虚拟内存</strong>关闭；</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303030744874.png" alt="image-20230303030744874" style="zoom:80%;">
+
+<p>​    </p>
+<p>​    <strong><code>用户</code><strong>这一页，把</strong>创建新用户</strong>关闭，把<strong>启用 Administrator</strong> 打开；</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303031034311.png" alt="image-20230303031034311" style="zoom:80%;">
+
+
+
+<p>​    **<code>网络</code>**这一页保持默认；</p>
+<p>​    **<code>任务</code>**这一页保持默认；（如果我们想在装系统的同时，顺带干一些其他事情，就可以通过任务页面来完成，时机可以选择部署前、中、后、登陆时、进桌面，任务可以选择运行程序，这样我们就可以在开机时把一些我们常用的软件自动进行安装了，同时也可以自动删除一些文件，创建完任务后记得点一下旁边的圈圈确认）</p>
+<p>​    最后一页**<code>其它</code>**，选择一个地方来存储你待会封装后的自定义系统镜像，点击保存，确定，系统就开始进行最后的封装了。</p>
+<img src="/2023/03/03/Customize%20Windows%20images.assets/image-20230303031741138.png" alt="image-20230303031741138" style="zoom:80%;">
+
+
+
+<p>等待进度条跑完，我们就可以到刚刚选择的位置，找到我们刚刚封装好的系统了，整个系统的封装流程便走完了。</p>
+<blockquote>
+<p>最后，你就可以对你的系统镜像进行安装测试了。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%95%9C%E5%83%8F/" rel="tag"># 镜像</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/14/vnc/" rel="prev" title="酷 vnc">
+                  <i class="fa fa-chevron-left"></i> 酷 vnc
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">imlai</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">92k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">5:35</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://imlai.club/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://imlai.club/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
