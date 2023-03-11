@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://imlai.club/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://imlai.club/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"laijune.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在 Linux 上安装 Clash 客户端首先在 Linux 上下载 Clash For Windows， Github release 链接：https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_pkg&#x2F;releases 12[root@stream9 ~]# wget https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clash on Linux">
+<meta property="og:url" content="https://laijune.github.io/2023/03/11/Clash.assets/index.html">
+<meta property="og:site_name" content="Xiaolai Blog">
+<meta property="og:description" content="在 Linux 上安装 Clash 客户端首先在 Linux 上下载 Clash For Windows， Github release 链接：https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_pkg&#x2F;releases 12[root@stream9 ~]# wget https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311184509324.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311185028114.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311185454175.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311203248574.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311204155796.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311213743586.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311214802252.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311215048631.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311215427918.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311215956479.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311220044363.png">
+<meta property="og:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311220122814.png">
+<meta property="article:published_time" content="2023-03-11T14:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-11T16:18:04.763Z">
+<meta property="article:author" content="imlai">
+<meta property="article:tag" content="Clash">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://laijune.github.io/2023/03/11/Clash.assets/image-20230311184509324.png">
+
+
+<link rel="canonical" href="https://laijune.github.io/2023/03/11/Clash.assets/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://laijune.github.io/2023/03/11/Clash.assets/","path":"2023/03/11/Clash.assets/","title":"Clash on Linux"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Clash on Linux | Xiaolai Blog</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="Xiaolai Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiaolai Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-Linux-%E4%B8%8A%E5%AE%89%E8%A3%85-Clash-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.</span> <span class="nav-text">在 Linux 上安装 Clash 客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Terminal-%E4%BB%A3%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">Terminal 代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%BF%AB%E9%80%9F%E5%90%AF%E5%8A%A8%E5%9B%BE%E6%A0%87"><span class="nav-number">3.</span> <span class="nav-text">配置快速启动图标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%EF%BC%88%E5%AE%89%E8%A3%85-Chrome%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">扩展（安装 Chrome）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="imlai"
+      src="/images/zhang.jpg">
+  <p class="site-author-name" itemprop="name">imlai</p>
+  <div class="site-description" itemprop="description">I can do all things</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  
+
+<div class="">
+  <div class="">
+      <a target="_blank" class="social-link" href="/atom.xml">
+      <div id="xxxx" class="social-item" style="width:100px;margin: 0 auto;margin-top: 10px;border:solid;padding-top:10;border-color:#fc6423;color:#fc6423;border-radius:11px;">
+          
+            <span class="icon" id="iconX" style="color:#fc6423;">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label" id="spanX" style="color:#fc6423;">RSS</span>
+      </div>
+      </a>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var div = document.getElementById('xxxx')
+  div.onmouseover = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#FC6423";
+    iconX.style.color = "white"    
+    spanX.style.color = "white"
+  }
+  div.onmouseout = function(){
+    var iconX = document.getElementById("iconX")
+    var spanX = document.getElementById("spanX")
+    div.style.backgroundColor="#222222";
+    iconX.style.color = "#fc6423"    
+    spanX.style.color = "#fc6423"
+  }
+
+</script>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/laijune" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;laijune" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:laijunyan.ss@outlook.com" title="Outlook-Mail → mailto:laijunyan.ss@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Outlook-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友链
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://xiaopan233.club/" title="https:&#x2F;&#x2F;xiaopan233.club&#x2F;" rel="noopener" target="_blank">Xiaopan233 Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.petitstart.club/" title="https:&#x2F;&#x2F;www.petitstart.club&#x2F;" rel="noopener" target="_blank">Petitstart'Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://alberthua-perl.github.io/" title="https:&#x2F;&#x2F;alberthua-perl.github.io&#x2F;" rel="noopener" target="_blank">Alberthua Blog</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://laijune.github.io/2023/03/11/Clash.assets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zhang.jpg">
+      <meta itemprop="name" content="imlai">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiaolai Blog">
+      <meta itemprop="description" content="I can do all things">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Clash on Linux | Xiaolai Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Clash on Linux
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-03-11 22:00:00" itemprop="dateCreated datePublished" datetime="2023-03-11T22:00:00+08:00">2023-03-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-03-12 00:18:04" itemprop="dateModified" datetime="2023-03-12T00:18:04+08:00">2023-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>1.1k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>4 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="在-Linux-上安装-Clash-客户端"><a href="#在-Linux-上安装-Clash-客户端" class="headerlink" title="在 Linux 上安装 Clash 客户端"></a>在 Linux 上安装 Clash 客户端</h2><p>首先在 Linux 上下载 <u>Clash For Windows</u>，</p>
+<p>Github release 链接：<a target="_blank" rel="noopener" href="https://github.com/Fndroid/clash_for_windows_pkg/releases">https://github.com/Fndroid/clash_for_windows_pkg/releases</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@stream9 ~]<span class="comment"># wget https://github.com/Fndroid/clash_for_windows_pkg/releases/download/0.20.18/Clash.for.Windows-0.20.18-x64-linux.tar.gz</span></span><br><span class="line"><span class="comment">#没有代理会下载的比较慢</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311184509324.png" alt="image-20230311184509324"></p>
+<span id="more"></span>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@stream9 ~]<span class="comment"># tar -xf Clash.for.Windows-0.20.18-x64-linux.tar.gz -C /mnt/</span></span><br><span class="line">[root@stream9 ~]<span class="comment"># cd /mnt/</span></span><br><span class="line">[root@stream9 mnt]<span class="comment"># mv Clash\ for\ Windows-0.20.18-x64-linux/ clash</span></span><br><span class="line">[root@stream9 mnt]<span class="comment"># cd clash/</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311185028114.png" alt="image-20230311185028114"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压后会出现对应的文件夹，文件夹中会有一个名为 cfw 的文件，按理说现在在文件中直接打开终端，然后运行</span></span><br><span class="line">[root@stream9 clash]<span class="comment"># ./cfw </span></span><br><span class="line">[0311/185145.670804:FATAL:electron_main_delegate.cc(292)] Running as root without --no-sandbox is not supported. See https://crbug.com/638180.</span><br><span class="line">Trace/breakpoint <span class="built_in">trap</span> (core dumped)</span><br><span class="line"></span><br><span class="line">`不过 root 用户需要加上 --no-sandbox 参数才支持,普通用户则不需要,直接 ./cfw 即可</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311185454175.png" alt="image-20230311185454175"></p>
+<blockquote>
+<p>现在可以导入 Clash 代理节点了</p>
+</blockquote>
+<h2 id="Terminal-代理"><a href="#Terminal-代理" class="headerlink" title="Terminal 代理"></a>Terminal 代理</h2><p>Terminal 局部代理（只在当前用户生效）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@stream9 ~]<span class="comment"># vim .bashrc </span></span><br><span class="line">... 在最下方添加以下命令 ...</span><br><span class="line"><span class="built_in">export</span> http_proxy=http://127.0.0.1:7890</span><br><span class="line"><span class="built_in">export</span> https_proxy=http://127.0.0.1:7890</span><br><span class="line"></span><br><span class="line">[root@stream9 ~]<span class="comment"># bash</span></span><br><span class="line">[root@stream9 ~]<span class="comment"># curl www.google.com</span></span><br><span class="line">&lt;!doctype html&gt;&lt;html itemscope=<span class="string">&quot;&quot;</span> itemtype=<span class="string">&quot;http://schema.org/WebPage&quot;</span>.........</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Terminal 全局代理（对所有用户生效）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@stream9 ~]<span class="comment"># vim /etc/bashrc </span></span><br><span class="line">... 在最下方添加以下命令 ...</span><br><span class="line"><span class="built_in">export</span> http_proxy=http://127.0.0.1:7890</span><br><span class="line"><span class="built_in">export</span> https_proxy=http://127.0.0.1:7890</span><br><span class="line"></span><br><span class="line">[lai@stream9 ~]$ bash</span><br><span class="line">[lai@stream9 ~]$ curl www.google.com</span><br><span class="line">&lt;!doctype html&gt;&lt;html itemscope=<span class="string">&quot;&quot;</span> itemtype=<span class="string">&quot;http://schema.org/WebPage&quot;</span>.........</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>顺便说一句，Linux 版本 Clash 客户端无法自动设置<strong>系统代理</strong>，需要自己手动设置</p>
+</blockquote>
+<h2 id="配置快速启动图标"><a href="#配置快速启动图标" class="headerlink" title="配置快速启动图标"></a>配置快速启动图标</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- 软链接我们解压出的 cfw 到对应路径下，注意不要直接 <span class="built_in">cp</span> 过去，会找不到动态库。</span><br><span class="line">[root@stream9 bin]<span class="comment"># ln -s /mnt/clash/cfw /usr/bin/clash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这时可以在任意路径下敲命令 clash 或 clash --no-sandbox</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311203248574.png" alt="image-20230311203248574"></p>
+<p>但最快捷的方法还是创建一个桌面图标（快捷方式）</p>
+<blockquote>
+<p>首先需要明白的是这个里面的每个快捷方式，其实都是解析一个文件得到的，这些文件都存在于 <code>/usr/share/applications/</code> 中，文件名为 <code>.desktop</code> </p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- 下载Logo图片（注意：要开代理下载）</span><br><span class="line">[root@stream9 mnt]<span class="comment"># wget https://upload.wikimedia.org/wikipedia/commons/0/0b/Clash_Logo.png</span></span><br><span class="line">[root@stream9 mnt]<span class="comment"># ls</span></span><br><span class="line">clash  Clash_Logo.png  hgfs</span><br><span class="line"></span><br><span class="line">- 创建一个<span class="string">&#x27;clash.desktop&#x27;</span>,文件内容如下：</span><br><span class="line">[root@stream9 ~]<span class="comment"># vim /usr/share/applications/clash.desktop</span></span><br><span class="line">[Desktop Entry]</span><br><span class="line">Name=Clash Fow Windows</span><br><span class="line">Exec=/usr/bin/clash --no-sandbox</span><br><span class="line">Icon=/mnt/Clash_Logo.png</span><br><span class="line">Type=Application</span><br><span class="line">StartupNotify=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line">保存退出,图标就创建好了</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[Desktop Entry]</td>
+<td>文件头</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>应用名称</td>
+</tr>
+<tr>
+<td>Comment</td>
+<td>描述</td>
+</tr>
+<tr>
+<td>Exec</td>
+<td>执行的命令</td>
+</tr>
+<tr>
+<td>Icon</td>
+<td>图标路径</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>启动器类型</td>
+</tr>
+<tr>
+<td>Categories</td>
+<td>应用的类型（内容相关）</td>
+</tr>
+<tr>
+<td>StartupNotify</td>
+<td>启动时是否打印输出信息</td>
+</tr>
+<tr>
+<td>Terminal</td>
+<td>是否在终端中运行</td>
+</tr>
+</tbody></table>
+<p><img src="/2023/03/11/Clash.assets/image-20230311204155796.png" alt="image-20230311204155796"></p>
+<blockquote>
+<p>注意，在 <code>/usr/share/applications</code> 路径下创建的 .desktop 文件是对所有用户生效的；</p>
+<p>如果只需要在当前用户（如 root）下生成应用的<u>桌面图标</u>，则放在<code>~/.local/share/applications/clash.desktop</code>路径下</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- 如下 ↓</span><br><span class="line">[root@stream9 ~]<span class="comment"># mv /usr/share/applications/clash.desktop ~/.local/share/applications/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="扩展（安装-Chrome）"><a href="#扩展（安装-Chrome）" class="headerlink" title="扩展（安装 Chrome）"></a>扩展（安装 Chrome）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">- 配置<span class="string">&#x27;google-chrome&#x27;</span>的repo源</span><br><span class="line">[root@stream9 ~]<span class="comment"># vim /etc/yum.repos.d/google.repo</span></span><br><span class="line">[google-chrome]</span><br><span class="line">name=google-chrome - 64-bit</span><br><span class="line">baseurl=http://dl.google.com/linux/chrome/rpm/stable/x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub</span><br><span class="line"></span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf clean all</span></span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf repolist</span></span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf makecache</span></span><br><span class="line"></span><br><span class="line">- 搜索chrome的包</span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf search chrome</span></span><br><span class="line">Last metadata expiration check: 0:00:18 ago on Sat 11 Mar 2023 09:27:47 PM CST.</span><br><span class="line">=============================================================== Name &amp; Summary Matched: chrome ===============================================================</span><br><span class="line">google-chrome-beta.x86_64 : Google Chrome (beta)</span><br><span class="line">google-chrome-stable.x86_64 : Google Chrome</span><br><span class="line">google-chrome-unstable.x86_64 : Google Chrome (unstable)</span><br><span class="line">==================================================================== Name Matched: chrome ====================================================================</span><br><span class="line">chrome-gnome-shell.x86_64 : Support <span class="keyword">for</span> managing GNOME Shell Extensions through web browsers</span><br><span class="line"></span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf list | grep chrome</span></span><br><span class="line">chrome-gnome-shell.x86_64                            10.1-14.el9                        @AppStream   </span><br><span class="line">google-chrome-beta.x86_64                            112.0.5615.20-1                    google-chrome</span><br><span class="line">google-chrome-stable.x86_64                          111.0.5563.64-1                    google-chrome</span><br><span class="line">google-chrome-unstable.x86_64                        113.0.5638.0-1                     google-chrome</span><br><span class="line"></span><br><span class="line">- 安装<span class="string">&#x27;google-chrome-stable&#x27;</span>(<span class="comment"># 可能需要走代理才能安装成功)</span></span><br><span class="line">[root@stream9 ~]<span class="comment"># dnf -y install google-chrome-stable.x86_64</span></span><br><span class="line"></span><br><span class="line">- 启动chrome</span><br><span class="line">[root@stream9 ~]<span class="comment"># google-chrome --no-sandbox</span></span><br><span class="line"><span class="comment"># 非root用户不需要加--no-sandbox</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311213743586.png" alt="image-20230311213743586"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- 查看chrome的桌面图标</span><br><span class="line">[root@stream9 ~]<span class="comment"># ls /usr/share/applications/ | grep -i chrome</span></span><br><span class="line">google-chrome.desktop</span><br><span class="line">org.gnome.ChromeGnomeShell.desktop</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311214802252.png" alt="image-20230311214802252"></p>
+<blockquote>
+<p>但是单击 chrome 谷歌图标，会无响应，<u>普通用户则可以正常打开 chrome</u>；</p>
+<p>原因：默认用户是root，<strong>但是谷歌不让 root 用户打开它，防止 root 权限进行破坏操作，所以需要一些操作关掉谷歌的沙盒模式</strong></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- 修改chrome的启动项配置</span><br><span class="line">[root@stream9 ~]<span class="comment"># vim /opt/google/chrome/google-chrome </span></span><br><span class="line"><span class="comment"># 找到如下最后一行代码</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311215048631.png" alt="image-20230311215048631"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- 添加一行<span class="string">&#x27;--user-data-dir --no-sandbox&#x27;</span></span><br><span class="line"><span class="built_in">exec</span> -a <span class="string">&quot;<span class="variable">$0</span>&quot;</span> <span class="string">&quot;<span class="variable">$HERE</span>/chrome&quot;</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span> --user-data-dir --no-sandbox</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/11/Clash.assets/image-20230311215427918.png" alt="image-20230311215427918"></p>
+<p>此时便可以愉快的玩转 Google 了。</p>
+<p>打开 Clash，在 Google 设置局部代理；</p>
+<p><code>Setting</code> —&gt; 搜索<code>proxy</code></p>
+<p><img src="/2023/03/11/Clash.assets/image-20230311215956479.png" alt="image-20230311215956479"></p>
+<img src="/2023/03/11/Clash.assets/image-20230311220044363.png" alt="image-20230311220044363" style="zoom: 80%;">
+
+<img src="/2023/03/11/Clash.assets/image-20230311220122814.png" alt="image-20230311220122814" style="zoom:80%;">
+
+
+
+<p>Okay，代理设置完毕，可以正常访问 Google ~</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Clash/" rel="tag"># Clash</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/03/Customize%20Windows%20images.assets/" rel="prev" title="制作 Windows 镜像">
+                  <i class="fa fa-chevron-left"></i> 制作 Windows 镜像
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">imlai</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>Word count total: </span>
+    <span title="Word count total">93k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>Reading time total &asymp;</span>
+    <span title="Reading time total">5:39</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://imlai.club/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://imlai.club/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
